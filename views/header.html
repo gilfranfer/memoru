@@ -1,0 +1,44 @@
+<header>
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#!/about">{{appConstants.app.name}}</a>
+        
+        <!-- For collapsable menu, uncomment bellow code
+        <nav ng-controller="" class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+          <div class="collapse navbar-collapse" id="navbarContent">
+            <div cFlass="navbar-nav">
+              Links goes here
+            </div>
+          </div>
+        -->
+        
+        <ul class="nav justify-content-end">
+          <!-- Menu Items when user is not logged in -->
+          <li class="nav-item" ng-if="!activeSession">
+            <a class="nav-link text-light" ng-href="#!/register">
+              {{i18n.menu.register}}
+            </a>
+          </li>
+          <li class="nav-item" ng-if="!activeSession">
+            <a class="nav-link text-light" ng-href="#!/login">
+              {{i18n.menu.login}}
+            </a>
+          </li>
+          
+          <!-- Menu Items when user is logged in -->
+          <li class="nav-item" ng-if="activeSession">
+            <a class="nav-link text-light" ng-href="#!/tasks">
+              <span class="badge badge-danger">{{activeSession.tasks.open}}</span> {{i18n.labels.tasks}}
+            </a>
+          </li>
+          <li class="nav-item" ng-if="activeSession">
+            <a class="nav-link text-light" ng-href="#!/login" ng-click="logout()">
+                {{i18n.menu.logout}}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+</header>
