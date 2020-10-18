@@ -24,11 +24,8 @@
   	<div class="container mt-4 mb-4">
       <main id="main" ng-view></main>
   	</div>
-    <footer class="footer text-center mt-5">
-      <a class="text-decoration-none d-block text-danger" href="https://gillab.netlify.app">
-        Powered with <i class="fas fa-heart"></i> by Gillab
-      </a>
-    </footer>
+
+    <section ng-include="'views/footer.html'"></section>
 
     <!-- Angular and Firebase -->
   	<script src="js/lib/angular.min.js"></script>
