@@ -4,7 +4,7 @@ const languages = {
         labels:{tasks:"Tasks"},
         lists:{
             addTitle:"Manage your Lists", addHint:"Type the list name", addDesc:"Use 3 and up to 25 letters",
-            alreadyExist:"That list already exist.", created:"A new list was created!"
+            alreadyExist:"That list already exist.", created:"A new list was created!", deleted: "The list was deleted!"
         }
 
     },
@@ -13,6 +13,6 @@ const languages = {
         labels:{tasks:"Tareas"},
         lists:{addTitle:"Administra tus Listas", addHint:"Escribe el nombre de la lista", 
                 addDesc:"Utiliza de 3 a 25 letras", alreadyExist:"Esa lista ya existe.",
-                created:"Una nueva lista fue creada!"}
+                created:"Una nueva lista fue creada!", deleted:"La lista ha sido eliminada"}
     }
 };

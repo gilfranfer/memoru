@@ -15,7 +15,7 @@ memoruAngular.controller('ListsCtrl',
             ListsSvc.updateList(userId,memoruConstants.defaultLists);
         };
         
-        $scope.newlist={locked:false,counts:{total:0}};
+        $scope.newlist={locked:false,counts:{total:0, open:0}};
         $scope.createNewList = function(){
             $scope.response = {};
             let userId = $rootScope.activeSession.userID;
@@ -36,7 +36,7 @@ memoruAngular.controller('ListsCtrl',
                     
                     //Create new list using the firebaseArray
                     $rootScope.allUserLists.$add($scope.newlist).then(function(ref){
-                        $scope.newlist={locked:false,counts:{total:0}};
+                        $scope.newlist={locked:false,counts:{total:0, open:0}};
                         $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.created };
                     }).catch(function(error) {
                         console.error(error);
@@ -45,6 +45,19 @@ memoruAngular.controller('ListsCtrl',
                 });
 
             });
+        };
+
+        $scope.deleteList = function(listId){
+            $scope.response = {};
+            var listItem = $rootScope.allUserLists.$getRecord(listId);
+            // $scope.$apply(function(){
+                $rootScope.allUserLists.$remove(listItem).then(function(ref) {
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.deleted };
+                }).catch(function(error) {
+                    console.error(error);
+                    $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: error};
+                });
+            // });
         };
         
     }]
