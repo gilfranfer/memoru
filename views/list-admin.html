@@ -1,7 +1,7 @@
 <section class="jumbotron">
   <h1 class="display-4 text-center">{{i18n.lists.addTitle}}</h1>
   <hr class="my-4">
-  <form class="" name="addListForm" novalidate ng-submit="createNewList()">
+  <form class="mb-4" name="addListForm" novalidate ng-submit="createNewList()">
     <div class="form-row">
       <div class="col-10">
         <input type="text" name="newlist.name" class="form-control form-control-lg"
@@ -17,4 +17,18 @@
       </div>
     </div>
   </form>
+  
+  <div class="alert alert-success alert-dismissible fade show" role="alert" ng-show="response.success">
+    <strong>{{response.title}}</strong> {{response.message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" ng-show="response.failed">
+    <strong>{{response.title}}</strong> {{response.message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
 </section>

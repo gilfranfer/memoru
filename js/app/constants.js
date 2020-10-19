@@ -3,6 +3,9 @@ const memoruConstants = {
         folders:{
             users:"memoru/users",
             lists: "lists"
+        },
+        fields:{
+            listname:"name"
         }
     },
     test:{
