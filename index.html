@@ -17,25 +17,28 @@
   </head>
 
 	<body>
-    <section ng-include="'views/header.html'"></section>
+    <section class="pb-4" ng-include="'views/header.html'"></section>
     
     <!-- Main Bootstrap container -->
-  	<div class="container mt-4 mb-4">
+  	<div class="pt-4 container">
+      <section class="" ng-controller="ListsCtrl">
+        <button class="btn btn-lg btn-block bt-danger" ng-click="createDefaultLists()">Create Default Lists</button>
+      </section>
       <main id="main" ng-view></main>
-  	</div>
+    </div>
+  
 
     <section ng-include="'views/footer.html'"></section>
 
     <!-- AngularJS and Firebase -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-route.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
-    <!-- <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script> -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-storage.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+
     <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
-    <script> firebase.initializeApp(firebaseConfig); </script>
     <script src="js/app/setup.js"></script>
+    <script src="js/app/lists.js"></script>
 
     <!-- Bootstrap JS: jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
