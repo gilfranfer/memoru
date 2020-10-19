@@ -7,5 +7,8 @@ const constants = {
     },
     test:{
        userID: "test-id"
+    },
+    front:{
+        app:{name:"Memoru", version: "1.0"}
     }
 };
