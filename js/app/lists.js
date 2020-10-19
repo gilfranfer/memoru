@@ -67,23 +67,23 @@ memoruAngular.factory('ListsSvc',
     ['$rootScope', '$firebaseArray', '$firebaseObject',
 	function($rootScope, $firebaseArray, $firebaseObject){
         let usersFolderRef = memoruFireDb.ref(memoruConstants.db.folders.users);
-        let listsFolder = memoruConstants.db.folders.lists;
+        let ownedListsFolder = memoruConstants.db.folders.mylists;
         let listnameField = memoruConstants.db.fields.listname;
 
         return{
             updateList: function(userId,listObj){
-                usersFolderRef.child(userId).child(listsFolder).update(listObj);
+                usersFolderRef.child(userId).child(ownedListsFolder).update(listObj);
             },
             // createList: function(userId,listObj){
-            //     let newListRef = usersFolderRef.child(userId).child(listsFolder).push();
+            //     let newListRef = usersFolderRef.child(userId).child(ownedListsFolder).push();
             //     newListRef.set(listObj);
             // },
             getUserListsRef: function(userId){
-                return usersFolderRef.child(userId).child(listsFolder);
+                return usersFolderRef.child(userId).child(ownedListsFolder);
             },
             getUserListByName: function(userId,listname){
                 console.debug("Searching list:",listname);
-                return usersFolderRef.child(userId).child(listsFolder).orderByChild(listnameField).equalTo(listname).once('value');                    
+                return usersFolderRef.child(userId).child(ownedListsFolder).orderByChild(listnameField).equalTo(listname).once('value');                    
             }
         }
     }]
