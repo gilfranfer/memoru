@@ -1,6 +1,6 @@
 //This fila contains Controllers and Services related to List
 
-memoruApp.controller('ListsCtrl',
+memoruAngular.controller('ListsCtrl',
 	['$rootScope','$scope','$firebaseAuth','$location',
     function($rootScope,$scope,$firebaseAuth,$location){
 
@@ -21,7 +21,7 @@ memoruApp.controller('ListsCtrl',
     }]
 );
 
-memoruApp.factory('ListsSvc',
+memoruAngular.factory('ListsSvc',
     ['$rootScope', '$firebaseArray', '$firebaseObject',
 	function($rootScope, $firebaseArray, $firebaseObject){
 
