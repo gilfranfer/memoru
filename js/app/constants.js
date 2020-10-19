@@ -6,7 +6,7 @@ const memoruConstants = {
         }
     },
     test:{
-       userID: "test-id"
+       userID: "test-id", username:"Test User"
     },
     front:{
         app:{name:"Memoru", version: "1.0"}
