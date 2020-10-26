@@ -1,6 +1,6 @@
 /* Initialize database connection using the firebaseConfig defined direclty in netlify host */
-var memoruFire = firebase.initializeApp(firebaseConfig); 
-var memoruFireDb = memoruFire.database(); 
+firebase.initializeApp(firebaseConfig); 
+var memoruStore = firebase.firestore(); 
 var memoruAngular = angular.module('memoruApp',['ngRoute','firebase']);
 
 /* Run function is executed after .config, and before .controller */

@@ -4,6 +4,8 @@
   	<title>Memoru | To-do List</title>
   	<meta charset="UTF-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Memoru - Collaborative ToDo List!">
+    <meta name="author" content="Fernando Gil">
 
   	<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -14,6 +16,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
     <link rel="manifest" href="images/favicon/site.webmanifest">
+
+    <style>
+      .clickable{ cursor: pointer; }
+    </style>
   </head>
 
 	<body>
@@ -23,7 +29,9 @@
   	<div class="pt-4 container">
       <section class="" ng-controller="ListsCtrl">
         
+        <button class="btn btn-lg btn-block btn-success" ng-click="createDefaultLists()">Create Default Lists</button>
         <article ng-include="'views/list-admin.html'"></article>
+        
       </section>
       <main id="main" ng-view></main>
     </div>
@@ -35,9 +43,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-route.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
     <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+    
     <script src="js/app/constants.js"></script>
     <script src="js/app/language.js"></script>
     <script src="js/app/setup.js"></script>

@@ -1,89 +1,125 @@
-//This fila contains Controllers and Services related to List
-
+var defaultLists = [
+    {
+        locked: true,
+        name:"Archive",
+        desc:"System Archive",
+        counts:{ total:0 }
+    },
+    {
+        locked: true,
+        name:"Trash",
+        desc:"System Trash",
+        counts:{ total:0 }
+    },
+    {
+        locked: true,
+        name:"Default",
+        desc:"System Default",
+        counts:{ total:0 }
+    }
+];
+/* This controller is used to Manage User's list */
 memoruAngular.controller('ListsCtrl',
-	['$rootScope','$scope','$firebaseAuth','$firebaseArray','ListsSvc','AlertsSvc',
-    function($rootScope,$scope,$firebaseAuth,$firebaseArray,ListsSvc,AlertsSvc){
+	['$rootScope','$scope','$firebaseAuth','ListsSvc','AlertsSvc',
+    function($rootScope,$scope,$firebaseAuth,ListsSvc,AlertsSvc){
 
-        //Fetch all Lists from db, for the current User
+        /* Fetch all Lists from db for the current User and set into $rootScope
+            Using "onSnapshot" to listen for real time changes.*/
         let userId = $rootScope.activeSession.userID;
-        if(!$rootScope.allUserLists){
-            $rootScope.allUserLists = $firebaseArray( ListsSvc.getUserListsRef(userId) );
-        }
+        if(!$rootScope.userlists){
+            var userlistsRef = ListsSvc.getListsCollectionForUser(userId);
+            userlistsRef.onSnapshot(function(querySnapshot){
+                let lists = [];
+                querySnapshot.forEach(function(doc) {
+                    lists.push(doc.data());
+                    console.log("List:",doc.data().name);
+                });
 
+                $scope.$apply(function(){
+                    $rootScope.userlists = lists;
+                });
+            });
+            
+        }
+        
         $scope.createDefaultLists = function(){
-            let userId = memoruConstants.test.userID;
-            ListsSvc.updateList(userId,memoruConstants.defaultLists);
+            defaultLists.forEach(function(list){
+                ListsSvc.persistListForUser(list,userId);
+            });
         };
         
         $scope.newlist={locked:false,counts:{total:0, open:0}};
-        $scope.createNewList = function(){
+        $scope.addNewList = function(){
             $scope.response = {};
-            let userId = $rootScope.activeSession.userID;
-
-            //Create a new list only if another one does not already exist with the same name
-            ListsSvc.getUserListByName(userId, $scope.newlist.name).then(function(snapshot){
-                $scope.$apply(function(){
-                    if(snapshot.val()){
-                        $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), 
-                                message: $rootScope.i18n.lists.alreadyExist };
-                        return;
-                    }
-
-                    $scope.newlist.creation = {
-                        id: $rootScope.activeSession.userID, 
-                        name: $rootScope.activeSession.username,
-                        on: firebase.database.ServerValue.TIMESTAMP };
-                    
-                    //Create new list using the firebaseArray
-                    $rootScope.allUserLists.$add($scope.newlist).then(function(ref){
-                        $scope.newlist={locked:false,counts:{total:0, open:0}};
-                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.created };
-                    }).catch(function(error) {
-                        console.error(error);
-                        $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: error};
+            let querySnapshot = ListsSvc.getUserListByName($scope.newlist.name, userId);
+            querySnapshot.then(function(data){
+                if(data.size>0){
+                    $scope.$apply(function(){
+                        $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: $rootScope.i18n.lists.alreadyExist };
                     });
-                });
-
+                }
+                //Create a new list only if another one does not already exist with the same name
+                else{
+                    $scope.newlist.creation = {
+                            id: $rootScope.activeSession.userID, 
+                            name: $rootScope.activeSession.username,
+                            on: firebase.firestore.FieldValue.serverTimestamp() };
+                    ListsSvc.persistListForUser($scope.newlist,userId).then(function(){
+                        $scope.newlist={locked:false,counts:{total:0, open:0}};
+                        $scope.$apply(function(){
+                            $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.created };
+                        });
+                    });
+                }
+            })
+            .catch(function(error) {
+                console.error("Error getting documents: ", error);
             });
         };
 
         $scope.deleteList = function(listId){
             $scope.response = {};
-            var listItem = $rootScope.allUserLists.$getRecord(listId);
-            // $scope.$apply(function(){
-                $rootScope.allUserLists.$remove(listItem).then(function(ref) {
+            
+            ListsSvc.deleteListById(listId,userId).then(function() {
+                $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.deleted };
-                }).catch(function(error) {
-                    console.error(error);
-                    $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: error};
+                    console.log("Document successfully deleted!");
                 });
-            // });
+            }).catch(function(error) {
+                $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: error};
+                console.error("Error removing document: ", error);
+            });
         };
         
     }]
 );
     
-memoruAngular.factory('ListsSvc',
-    ['$rootScope', '$firebaseArray', '$firebaseObject',
-	function($rootScope, $firebaseArray, $firebaseObject){
-        let usersFolderRef = memoruFireDb.ref(memoruConstants.db.folders.users);
-        let ownedListsFolder = memoruConstants.db.folders.mylists;
-        let listnameField = memoruConstants.db.fields.listname;
-
+memoruAngular.factory('ListsSvc', ['$rootScope', 
+	function($rootScope){
+        // let usersFolderRef = memoruStore.ref(memoruConstants.db.folders.users);
+        // let ownedListsFolder = memoruConstants.db.folders.mylists;
+        // let listnameField = memoruConstants.db.fields.listname;
+        let userLists = memoruConstants.db.collections.userlists;
+        let ownedLists = memoruConstants.db.collections.ownedlists;
+        
         return{
-            updateList: function(userId,listObj){
-                usersFolderRef.child(userId).child(ownedListsFolder).update(listObj);
+            getListsCollectionForUser: function(userId){
+                return memoruStore.collection(userLists).doc(userId).collection(ownedLists);
             },
-            // createList: function(userId,listObj){
-            //     let newListRef = usersFolderRef.child(userId).child(ownedListsFolder).push();
-            //     newListRef.set(listObj);
-            // },
-            getUserListsRef: function(userId){
-                return usersFolderRef.child(userId).child(ownedListsFolder);
+            /* Add a new document with an auto-generated id, and set that id inside the Doc (for future use) */
+            persistListForUser: function(listObj,userId){
+                let newListRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc();
+                listObj.id = newListRef.id
+                return newListRef.set(listObj);
             },
-            getUserListByName: function(userId,listname){
-                console.debug("Searching list:",listname);
-                return usersFolderRef.child(userId).child(ownedListsFolder).orderByChild(listnameField).equalTo(listname).once('value');                    
+            /* Delete the document from DB. Please note that any subcollections in the Document are not deleted. Returning a promise. */
+            deleteListById: function(listId,userId){
+                return memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc(listId).delete();
+            },
+            /* */
+            getUserListByName: function(listname,userId){
+                let query = memoruStore.collection(userLists).doc(userId).collection(ownedLists).where('name','==',listname);
+                return query.get();               
             }
         }
     }]
