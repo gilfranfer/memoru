@@ -1,7 +1,8 @@
 const memoruConstants = {
     db:{ 
         collections:{
-            userlists:"lists", ownedlists:"owned"
+            userlists:"lists", ownedlists:"owned",
+            userTasks:"tasks", ownedTasks:"owned"
         },
         folders:{
             users:"memoru/users",

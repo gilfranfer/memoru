@@ -7,7 +7,14 @@ var memoruAngular = angular.module('memoruApp',['ngRoute','firebase']);
 memoruAngular.run(function($rootScope) {
 	$rootScope.appConstants = memoruConstants.front;
     $rootScope.i18n = languages.english;
-    $rootScope.activeSession = { userID: memoruConstants.test.userID, username: memoruConstants.test.username  }
+	$rootScope.activeSession = { 
+		userID: memoruConstants.test.userID, 
+		username: memoruConstants.test.username,  
+		preferences: { 
+			lists:{ selected: "LKq2M728Q6cbopFACk6P" },
+			tasks:{ sorting:{by:"date", reverse:true} } 
+		}
+	}
     // memoruFireDb.ref().child("memoru/users/test-id/auth").once('value').then(
 	// 	function(snapshot){
 	// 		if(snapshot.val()){
