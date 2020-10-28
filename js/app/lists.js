@@ -60,10 +60,10 @@ memoruAngular.controller('ListsCtrl',
                 }
                 //Create a new list only if another one does not already exist with the same name
                 else{
-                    $scope.newlist.creation = {
-                            id: $rootScope.activeSession.userID, 
-                            name: $rootScope.activeSession.username,
-                            on: firebase.firestore.FieldValue.serverTimestamp() };
+                    $scope.newlist.creator = $rootScope.activeSession.username;
+                    $scope.newlist.createrId = $rootScope.activeSession.userID;
+                    $scope.newlist.createdOn = firebase.firestore.FieldValue.serverTimestamp();
+
                     ListsSvc.persistListForUser($scope.newlist,userId).then(function(){
                         $scope.newlist={locked:false,counts:{total:0, open:0}};
                         $scope.$apply(function(){
