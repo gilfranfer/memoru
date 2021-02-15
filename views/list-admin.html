@@ -31,15 +31,28 @@
         <li class="list-group-item list-group-item-action flex-column align-items-start clickable"
           ng-repeat="list in userlists | filter: {name: newlist.name}">
           <div class="d-flex w-100 justify-content-between">
-            <div>
-                <span class="badge badge-primary">{{list.counts.open}}</span>
-                <span class="ml-2">{{list.name}}</span>
+            <div id="listname-area">
+              <div class="row">
+                <span class="ml-2 h5">{{list.name}}</span>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <span class="badge badge-primary">{{list.counts.total}}</span> {{i18n.lists.tasksInList}}
+                </div>
+              </div>
             </div>
-            <small  ng-if="!list.locked">
-              <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteList(list.id)">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </small>
+            <div id="actions">
+             <small  ng-if="list.locked">
+                <button type="button" class="btn btn-sm btn-outline-dark" disabled>
+                  <i class="fas fa-lock"></i>
+                </button>
+              </small>
+              <small  ng-if="!list.locked">
+                <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteList(list.id)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </small>
+            </div>
           </div>
         </li>
       </ul>

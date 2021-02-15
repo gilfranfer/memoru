@@ -48,6 +48,7 @@ memoruAngular.controller('ListsCtrl',
             });
         };
         
+        /** Only System default lists are locked */
         $scope.newlist={locked:false,counts:{total:0, open:0}};
         $scope.addNewList = function(){
             $scope.response = {};
@@ -55,7 +56,8 @@ memoruAngular.controller('ListsCtrl',
             querySnapshot.then(function(data){
                 if(data.size>0){
                     $scope.$apply(function(){
-                        $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: $rootScope.i18n.lists.alreadyExist };
+                        $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), 
+                                            message: $rootScope.i18n.lists.alreadyExist };
                     });
                 }
                 //Create a new list only if another one does not already exist with the same name
@@ -67,7 +69,8 @@ memoruAngular.controller('ListsCtrl',
                     ListsSvc.persistListForUser($scope.newlist,userId).then(function(){
                         $scope.newlist={locked:false,counts:{total:0, open:0}};
                         $scope.$apply(function(){
-                            $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.created };
+                            $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
+                                                message: $rootScope.i18n.lists.created };
                         });
                     });
                 }
@@ -82,8 +85,9 @@ memoruAngular.controller('ListsCtrl',
             
             ListsSvc.deleteListById(listId,userId).then(function() {
                 $scope.$apply(function(){
-                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.lists.deleted };
-                    console.log("Document successfully deleted!");
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
+                                        message: $rootScope.i18n.lists.deleted };
+                    console.debug($scope.response.message);
                 });
             }).catch(function(error) {
                 $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: error};
