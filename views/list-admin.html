@@ -10,7 +10,8 @@
         <small id="nameHelp" class="form-text text-muted">{{i18n.lists.addDesc}}</small>
       </div>
       <div class="col-2">
-        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addListForm.$invalid">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addListForm.$invalid"
+          data-toggle="tooltip" data-placement="top" title="{{i18n.lists.addBtnTooltip}}">
             <i class="fas fa-plus"></i>
         </button>
       </div>
@@ -57,3 +58,9 @@
         </li>
       </ul>
 </section>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
