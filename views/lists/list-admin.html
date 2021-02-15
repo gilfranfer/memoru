@@ -1,0 +1,76 @@
+<!-- Section to Create and Search Lists -->
+<section class="jumbotron">
+  <h1 class="display-4 text-center">{{i18n.lists.addTitle}}</h1>
+  <hr class="my-4">
+  <form class="" name="addListForm" novalidate ng-submit="addNewList()">
+    <div class="form-row">
+      <div class="col-10">
+        <input type="text" minlength="1" maxlength="25" class="form-control form-control-lg" placeholder="{{i18n.lists.addHint}}" 
+            ng-model="newlist.name" ng-required="true" aria-describedby="nameHelp"/>
+        <small id="nameHelp" class="form-text text-muted">{{i18n.lists.addDesc}}</small>
+      </div>
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addListForm.$invalid"
+          data-toggle="tooltip" data-placement="top" title="{{i18n.lists.addBtnTooltip}}">
+            <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<div class="alert alert-success alert-dismissible fade show" role="alert" ng-show="response.success">
+    <strong>{{response.title}}</strong> {{response.message}}
+</div>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" ng-show="response.failed">
+    <strong>{{response.title}}</strong> {{response.message}}
+</div>
+
+<!-- Section to display all the User's Lists with Accordion (show off) -->
+<section>
+  <div class="accordion" id="lists-accordion">
+    <div class="list-group-item list-group-item-action flex-column align-items-start clickable" 
+      ng-repeat="list in userlists | filter: {name: newlist.name}">
+
+      <!-- List summary and actions -->
+      <div class="d-flex w-100 justify-content-between" data-toggle="collapse" data-target="#collapse-{{list.id}}" aria-expanded="true" aria-controls="collapse-{{list.id}}">
+        <div id="list-summary">
+          <div class="row">
+            <span class="ml-2 h5" id="heading-{{list.id}}">{{list.name}}</span>
+          </div>
+          <div class="row">
+            <div class="col">
+              <span class="badge badge-primary">{{list.counts.total}}</span> {{i18n.lists.tasksInList}}
+            </div>
+          </div>
+        </div>
+        <div id="list-actions">
+         <small  ng-if="list.locked">
+            <button type="button" class="btn btn-sm btn-outline-dark" disabled>
+              <i class="fas fa-lock"></i>
+            </button>
+          </small>
+          <small  ng-if="!list.locked">
+            <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteList(list.id)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </small>
+        </div>
+      </div>
+  
+      <!-- Collapsible part  -->
+      <div id="collapse-{{list.id}}" class="collapse" aria-labelledby="heading-{{list.id}}" data-parent="#lists-accordion">
+        <div class="card-body">
+          Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the <code>.show</code> class.
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>

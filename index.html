@@ -17,18 +17,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
     <link rel="manifest" href="images/favicon/site.webmanifest">
 
-    <!-- Dev Config, DO NOT COMMIT -->
-    <script>
-      var firebaseConfig = {
-        apiKey: "AIzaSyC7Yd4e6W8m80OyuGQiajYu8Na9-ivaUSA",
-        authDomain: "memoru-dev.firebaseapp.com",
-        databaseURL: "https://memoru-dev.firebaseio.com",
-        projectId: "memoru-dev",
-        storageBucket: "memoru-dev.appspot.com",
-        messagingSenderId: "657049835975",
-        appId: "1:657049835975:web:1aa1ba450f0ff42d3721e2"
-      };
-    </script>
 
     <!-- Bootstrap JS: jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -46,7 +34,7 @@
     <!-- Main Bootstrap container -->
   	<div class="pt-4 container">
       <section class="" ng-controller="ListsCtrl">
-        <article ng-include="'views/list-admin.html'"></article>
+        <article ng-include="'views/lists/list-admin.html'"></article>
       </section>
       <!-- <section class="" ng-controller="TaskboardCtrl">
         <article ng-include="'views/tasks.html'"></article>

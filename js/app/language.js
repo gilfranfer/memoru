@@ -3,8 +3,8 @@ const languages = {
         menu:{login:"Log in", logout: "Log out", register:"Register"},
         labels:{tasks:"Tasks"},
         lists:{
-            addTitle:"Manage your Lists", addHint:"Type the list name", 
-            addDesc:"Use 3 and up to 25 letters", alreadyExist:"That list already exist.", 
+            addTitle:"Manage your Lists", addHint:"Type something here ...", addBtnTooltip:"Add as List",
+            addDesc:"Type to find a list or create a new one", alreadyExist:"That list already exist.", 
             created:"A new list was created!", deleted: "The list was deleted!",
             tasksInList:"Tasks exist in this list."
         },
@@ -13,8 +13,8 @@ const languages = {
     spanish: {
         menu:{login:"Iniciar sesión", logout: "Cerrar sesión", register:"Registro"},
         labels:{tasks:"Tareas"},
-        lists:{addTitle:"Administra tus Listas", addHint:"Escribe el nombre de la lista", 
-                addDesc:"Utiliza de 3 a 25 letras", alreadyExist:"Esa lista ya existe.",
+        lists:{addTitle:"Administra tus Listas", addHint:"Escribe algo ...", addBtnTooltip:"Agregar como Lista",
+                addDesc:"Escribe para encontrar una lista o crear una nueva", alreadyExist:"Esa lista ya existe.",
                 created:"Una nueva lista fue creada!", deleted:"La lista ha sido eliminada",
                 tasksInList:"Tareas existen en esta lista."
         },
