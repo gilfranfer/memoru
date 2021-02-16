@@ -29,22 +29,22 @@
 <!-- Section to display all the User's Lists with Accordion (show off) -->
 <section>
   <div class="accordion" id="lists-accordion">
-    <div class="list-group-item list-group-item-action flex-column align-items-start clickable" 
+    <div class="list-group-item list-group-item-action flex-column align-items-start" 
       ng-repeat="list in userlists | filter: {name: newlist.name}">
 
       <!-- List summary and actions -->
-      <div class="d-flex w-100 justify-content-between" data-toggle="collapse" data-target="#collapse-{{list.id}}" aria-expanded="true" aria-controls="collapse-{{list.id}}">
-        <div id="list-summary">
+      <div class="d-flex w-100 justify-content-between clickable" data-toggle="collapse" data-target="#collapse{{list.id}}" aria-expanded="true" aria-controls="collapse{{list.id}}">
+        <article id="list-summary">
           <div class="row">
-            <span class="ml-2 h5" id="heading-{{list.id}}">{{list.name}}</span>
+            <span class="ml-2 h5" id="heading{{list.id}}">{{list.name}}</span>
           </div>
           <div class="row">
             <div class="col">
               <span class="badge badge-primary">{{list.counts.total}}</span> {{i18n.lists.tasksInList}}
             </div>
           </div>
-        </div>
-        <div id="list-actions">
+        </article>
+        <article id="list-actions">
          <small  ng-if="list.locked">
             <button type="button" class="btn btn-sm btn-outline-dark" disabled>
               <i class="fas fa-lock"></i>
@@ -55,16 +55,43 @@
               <i class="fas fa-trash-alt"></i>
             </button>
           </small>
-        </div>
+        </article>
       </div>
   
       <!-- Collapsible part  -->
-      <div id="collapse-{{list.id}}" class="collapse" aria-labelledby="heading-{{list.id}}" data-parent="#lists-accordion">
-        <div class="card-body">
-          Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the <code>.show</code> class.
-        </div>
+      <div id="collapse{{list.id}}" class="collapse" aria-labelledby="heading{{list.id}}" data-parent="#lists-accordion">
+        <form class="row" name="editListForm{{list.id}}" novalidate ng-submit="editList(list)">
+          <!-- Update fields Area -->
+          <div class="col-8 mt-4">
+            <div class="form-row">
+              <div class="col">
+                <input type="text" minlength="1" maxlength="25" class="form-control form-control-lg" 
+                ng-model="list.name" ng-required="true" aria-describedby="nameHelp"/>
+              </div>
+            </div>
+            <div class="form-row mt-2">
+              <div class="col">
+                <textarea name="" id="" class="form-control form-control-lg" ng-model="list.desc">
+                </textarea>
+              </div>
+            </div>
+          </div>
+          <!-- Info and Save Area -->
+          <div class="col-4 mt-4">
+            <div class="form-row  mb-0 alert alert-info">
+              <label>{{i18n.lists.createdOn}}</label> <br>
+              <label>{{list.createdOn.toMillis()| date: "MMM dd yyyy hh:mm"}}</label>
+            </div>
+            <div class="form-row mt-2" ng-if="!list.locked">
+              <button type="submit" class="btn btn-success btn-lg btn-block clickable" 
+              ng-disabled="editListForm{{list.id}}.$invalid" title="{{i18n.lists.editBtnTooltip}}">
+                  <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      
+
     </div>
   </div>
 </section>
