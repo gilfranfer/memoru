@@ -9,7 +9,10 @@ const languages = {
             updated:"List Updated!", deleted: "The list was deleted!",
             tasksInList:"Tasks exist in this list.", editBtnTooltip:"Guardar cambios"
         },
-        tasks:{addHint:"Type something ...", created:"A new task was created!"}
+        tasks:{addHint:"Type something ...", created:"A new task was created!"},
+        alerts:{
+            listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
+        }
     },
     spanish: {
         menu:{login:"Iniciar sesión", logout: "Cerrar sesión", register:"Registro"},
@@ -20,6 +23,9 @@ const languages = {
                 updated:"Lista Actualizada!", deleted:"La lista ha sido eliminada.",
                 tasksInList:"Tareas existen en esta lista.", editBtnTooltip:"Update List"
         },
-        tasks:{addHint:"Escribe algo ...", created:"Una nueva tarea fue creada!"}
+        tasks:{addHint:"Escribe algo ...", created:"Una nueva tarea fue creada!"},
+        alerts:{
+            listDelete:"Al eliminar una lista, todas sus Tareas Abiertas serán movidas a la lista 'Default'."
+        }
     }
 };
