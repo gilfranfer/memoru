@@ -1,18 +1,18 @@
 var defaultLists = [
     {
-        locked: true,
+        locked: true, visible:false,
         name:"Archive",
         desc:"System Archive",
         counts:{ total:0 }
     },
     {
-        locked: true,
+        locked: true, visible:false,
         name:"Trash",
         desc:"System Trash",
         counts:{ total:0 }
     },
     {
-        locked: true,
+        locked: true, visible:false,
         name:"Default",
         desc:"System Default",
         counts:{ total:0 }
@@ -51,7 +51,7 @@ memoruAngular.controller('ListsCtrl',
         };
         
         /** Only System default lists are locked */
-        $scope.newlist={locked:false,counts:{total:0, open:0},desc:''};
+        $scope.newlist={locked:false, visible:true,counts:{total:0, open:0},desc:''};
         $scope.addNewList = function(){
             $scope.response = {};
             let querySnapshot = ListsSvc.getUserListByName(userId,$scope.newlist.name);
@@ -69,7 +69,7 @@ memoruAngular.controller('ListsCtrl',
                     $scope.newlist.createdOn = firebase.firestore.FieldValue.serverTimestamp();
 
                     ListsSvc.persistListForUser($scope.newlist,userId).then(function(){
-                        $scope.newlist={locked:false,counts:{total:0, open:0},desc:''};
+                        $scope.newlist={locked:false, visible:true,counts:{total:0, open:0},desc:''};
                         $scope.$apply(function(){
                             $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                                 message: $rootScope.i18n.lists.created };
@@ -123,6 +123,16 @@ memoruAngular.controller('ListsCtrl',
 
         };
 
+        $scope.makeListVisible = function(list,visible){
+            list.visible = visible;
+            ListsSvc.updateListVisibility(list,userId).then(function(){
+                $scope.$apply(function(){
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
+                                        message: $rootScope.i18n.lists.updated };
+                });
+            });
+        };
+
     }]
 );
     
@@ -148,6 +158,11 @@ memoruAngular.factory('ListsSvc', ['$rootScope',
             updateListForUser: function(listObj,userId){
                 let listRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc(listObj.id);
                 return listRef.set(listObj);
+            },
+            /* Update List visible field */
+            updateListVisibility: function(listObj,userId){
+                let listRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc(listObj.id);
+                return listRef.update({visible:listObj.visible});
             },
             /* Delete the document from DB. Please note that any subcollections in the Document are not deleted. Returning a promise. */
             deleteListById: function(listId,userId){
