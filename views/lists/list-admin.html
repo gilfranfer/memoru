@@ -82,7 +82,7 @@
       <div id="collapse{{list.id}}" class="collapse" aria-labelledby="heading{{list.id}}" data-parent="#lists-accordion">
         <form class="row" name="editListForm{{list.id}}" novalidate ng-submit="editList(list)">
           <!-- Update fields Area -->
-          <div class="col-8 mt-4">
+          <div class="col-12 col-md-8 mt-4">
             <div class="form-row">
               <div class="col">
                 <input type="text" minlength="1" maxlength="25" class="form-control form-control-lg" 
@@ -97,7 +97,7 @@
             </div>
           </div>
           <!-- Info and Save Area -->
-          <div class="col-4 mt-4">
+          <div class="col-12 col-md-4 mt-4">
             <div class="form-row  mb-0 alert alert-info">
               <label>{{i18n.lists.createdOn}}</label> <br>
               <label>{{list.createdOn.toMillis()| date: "MMM dd yyyy hh:mm"}}</label>
