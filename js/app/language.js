@@ -12,6 +12,7 @@ const languages = {
         tasks:{ 
             title:"'s Task board", addHint:"Type your task here ...", addBtnTooltip:"Add this Task",
             addDesc:"Type to find a task or create a new one",
+            openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
             created:"A new task has been created!"
         },
         alerts:{
@@ -30,6 +31,7 @@ const languages = {
         tasks:{ 
             title:", tus Tareas son", addHint:"Escribe tu Tarea ...", addBtnTooltip:"Crear Tarea",
             addDesc:"Escribe para encontrar una Tarea o crear una nueva",
+            openTasks: "Tareas Pendientes", closedTasks: "Tareas Completadas",
             created:"Una nueva Tarea fue creada!"
         },
         tasks:{ title:"", addHint:"Escribe algo ...", created:"Una nueva tarea fue creada!"},
