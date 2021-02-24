@@ -26,7 +26,7 @@ memoruAngular.controller('ListsCtrl',
         /* Fetch all Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
         let userId = $rootScope.activeSession.userID;
-        if(!$rootScope.userlists){
+        if(!$rootScope.allUserlists){
             var userlistsRef = ListsSvc.getListsCollectionForUser(userId);
             userlistsRef.onSnapshot(function(querySnapshot){
                 let lists = [];
@@ -36,7 +36,7 @@ memoruAngular.controller('ListsCtrl',
                 });
 
                 $scope.$apply(function(){
-                    $rootScope.userlists = lists;
+                    $rootScope.allUserlists = lists;
                 });
             });
             
