@@ -99,7 +99,7 @@ memoruAngular.controller('ListsCtrl',
         
         $scope.editList = function(list){
             $scope.response = {};
-            let querySnapshot = ListsSvc.getUserListByName(userId,list.name);
+            let querySnapshot = ListsSvc.getUserListByNameAndId(userId, list.name, list.id);
             querySnapshot.then(function(data){
                 if(data.size>0){
                     $scope.$apply(function(){
@@ -171,12 +171,15 @@ memoruAngular.factory('ListsSvc', ['$rootScope',
             deleteListById: function(listId,userId){
                 return memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc(listId).delete();
             },
-            /* Search a user's list by name. listId is optional.*/
-            getUserListByName: function(userId,listname,listId){
+            /* Search a user's list by name.*/
+            getUserListByName: function(userId,listname){
                 let query = memoruStore.collection(userLists).doc(userId).collection(ownedLists).where('name','==',listname);
-                if(listId){
-                    query = query.where('id','!=',listId);
-                }
+                return query.get();               
+            },
+            /* Search a user's list by name and Id (used when editing list's name. */
+            getUserListByNameAndId: function(userId,listname,listId){
+                let query = memoruStore.collection(userLists).doc(userId).collection(ownedLists)
+                    .where('name','==',listname).where('id','!=',listId);
                 return query.get();               
             }
         }
