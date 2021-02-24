@@ -1,43 +1,61 @@
-/* The Taskboard controller is used to Manage User's list of tasks.
-It includes actions to Create, Delete, Close and Archive tasks. */
+/* The Taskboard controller is used to Manage User's list of tasks. 
+ It includes actions to Create, Delete, Close and Archive tasks. 
+ On Taskboard init, we need to:
+    - Fetch User Visible Lists (to use in the "list selector")
+    - Set the "Active List" from preferences
+    - Set Task Sorting preferences 
+    - Load Open tasks for the Active List
+*/
 memoruAngular.controller('TaskboardCtrl',
 	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
     function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
-
-        /* On Taskboard load, we need to load 
-        1. All the User's list, for the "list selector"
-        2. Task Sorting preferences
-        3. Tasks from the currently selected List */
         
-        /* Set initial Task Sorting from User preferences */
-        if( !$rootScope.taskSortConfig ){
-            $rootScope.taskSortConfig = $rootScope.activeSession.preferences.tasks.sorting;
-        }
+        /** TASKBOARD INITIAL LOAD */
 
-        /* Set initial Active List from User preferences */
-        if( !$rootScope.activeList ){
-			$rootScope.activeList = $rootScope.activeSession.preferences.lists.selected;
-        }
-        
-        /* TODO: This code is the same in ListsCtrl. I could move both to a sinlge controller */
-        /* Fetch all Lists from db for the current User and set into $rootScope
+            /* Fetch all Visible Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
-        let userId = $rootScope.activeSession.userID;
-        if(!$rootScope.userlists){
-            var userlistsRef = ListsSvc.getListsCollectionForUser(userId);
-            userlistsRef.onSnapshot(function(querySnapshot){
-                let lists = [];
+            let userId = $rootScope.activeSession.userID;
+            if(!$rootScope.visibleUserlists){
+                var userlistsRef = ListsSvc.getVisibleListsForUser(userId);
+                userlistsRef.onSnapshot(function(querySnapshot){
+                    let lists = [];
+                    querySnapshot.forEach(function(doc) {
+                        lists.push(doc.data());
+                        console.debug("List:",doc.data().name);
+                    });
+
+                    $scope.$apply(function(){
+                        $rootScope.visibleUserlists = lists;
+                    });
+                });
+            }
+
+            /* Set initial Active List from User preferences */
+            if( !$rootScope.activeList ){
+                $rootScope.activeList = $rootScope.activeSession.preferences.lists.selected;
+            }
+
+            /* Set initial Task Sorting from User preferences */
+            if( !$rootScope.taskSortConfig ){
+                $rootScope.taskSortConfig = $rootScope.activeSession.preferences.tasks.sorting;
+            }
+
+            /* Load Open Tasks in Active List */
+            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList, 'open' );
+            tasksListRef.onSnapshot(function(querySnapshot){
+                let tasks = [];
                 querySnapshot.forEach(function(doc) {
-                    lists.push(doc.data());
-                    console.log("List:",doc.data().name);
+                    tasks.push(doc.data());
+                    console.log("Task:",doc.data().name);
                 });
 
                 $scope.$apply(function(){
-                    $rootScope.userlists = lists;
+                    $rootScope.tasksList = tasks;
                 });
             });
-        }
+
         
+        /** METHODS */
         $scope.newTask = {status:'open'};
         $scope.addTask = function(){
             $scope.response = {};
@@ -45,7 +63,7 @@ memoruAngular.controller('TaskboardCtrl',
             $scope.newTask.creator = $rootScope.activeSession.username;
             $scope.newTask.createrId = $rootScope.activeSession.userID;
             $scope.newTask.createdOn = firebase.firestore.FieldValue.serverTimestamp();
-            console.log($scope.newTask);
+            console.debug($scope.newTask);
             TasksSvc.persistTaskForUser($scope.newTask,userId).then(function(){
                 $scope.newTask = {status:'open'};
                 $scope.$apply(function(){
@@ -56,23 +74,6 @@ memoruAngular.controller('TaskboardCtrl',
         
     }]
 );
-
-
-let task = {
-    id: "",
-    name:"Code Memoru",
-    desc:"Code an application for Collaborative to-do list",
-    status:"Pending (2) | Review (1) | Completed (0)",
-    wasAssigned: false,
-    creation:{id:"", name:"", on:""},
-    completion:{id:"", name:"", on:""},
-    deletion:{id:"", name:"", on:""},
-    archival:{id:"", name:"", on:""},
-    review:{id:"", name:"", on:""},
-    subtasks:[],
-    comments:[],
-    fromList:"List ID"
-};
 
 memoruAngular.factory('TasksSvc',
     ['$rootScope',
@@ -86,6 +87,11 @@ memoruAngular.factory('TasksSvc',
                 taskObj.id = newTaskRef.id
                 return newTaskRef.set(taskObj);
             },
+            /** Returns a refernce to the tasks for the specified User, List and Status*/
+            getTasksFromUserListWithStatus: function(userId, listId, taskStatus){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks)
+                    .where('list','==',listId).where('status','==',taskStatus);
+            }
         }
     }]
 );
