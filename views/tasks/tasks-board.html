@@ -1,0 +1,36 @@
+<!-- Section to Create and Search Lists -->
+<section id="" class="jumbotron">
+  <p class="d-md-none h4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
+  <p class="d-none d-md-block display-4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
+  <hr class="my-4">
+  <form class="" name="addtaskForm" novalidate ng-submit="addTask()">
+    <div class="form-row">
+      <div class="col-10">
+        <input type="text" minlength="1" class="form-control form-control-lg" placeholder="{{i18n.tasks.addHint}}" 
+            ng-model="newtask.name" ng-required="true" aria-describedby="nameHelp"/>
+        <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.addDesc}}</small>
+      </div>
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addtaskForm.$invalid"
+          data-toggle="tooltip" data-placement="top" title="{{i18n.tasks.addBtnTooltip}}">
+            <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<section id="response-alerts">
+  <div class="alert alert-success" role="alert" ng-show="response.success">
+      <strong>{{response.title}}</strong> {{response.message}}
+  </div>
+  <div class="alert alert-danger" role="alert" ng-show="response.failed">
+      <strong>{{response.title}}</strong> {{response.message}}
+  </div>
+</section>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>

@@ -41,6 +41,7 @@ memoruAngular.controller('TaskboardCtrl',
             }
 
             /* Load Open Tasks in Active List */
+            $rootScope.loadedTasksStatus = "open";
             let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList, 'open' );
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
