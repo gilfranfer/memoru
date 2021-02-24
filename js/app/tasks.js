@@ -46,6 +46,7 @@ memoruAngular.controller('TaskboardCtrl',
 
          
         /** TASKBOARD INITIAL LOAD */
+        $scope.taskType = 'task';
 
             /* Fetch all Visible Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/

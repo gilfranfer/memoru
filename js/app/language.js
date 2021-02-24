@@ -10,9 +10,10 @@ const languages = {
             tasksInList:"Tasks exist in this list.", editBtnTooltip:"Guardar cambios"
         },
         tasks:{ 
-            title:"'s Task board", addHint:"Type your task here ...", addBtnTooltip:"Add this Task",
+            title:"'s Task board", addHint:"Type here to find a task or create a new one", addBtnTooltip:"Add this Task",
             addDesc:"Type to find a task or create a new one",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
+            taskType: "Task", goalType: "Goal",
             created:"A new task has been created!"
         },
         alerts:{
