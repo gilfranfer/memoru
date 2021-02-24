@@ -172,7 +172,7 @@ memoruAngular.factory('ListsSvc', ['$rootScope',
             getUserListByName: function(userId,listname,listId){
                 let query = memoruStore.collection(userLists).doc(userId).collection(ownedLists).where('name','==',listname);
                 if(listId){
-                    query.where('id','!=',listId);
+                    query = query.where('id','!=',listId);
                 }
                 return query.get();               
             }
