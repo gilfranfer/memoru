@@ -148,6 +148,9 @@ memoruAngular.factory('ListsSvc', ['$rootScope',
             getListsCollectionForUser: function(userId){
                 return memoruStore.collection(userLists).doc(userId).collection(ownedLists);
             },
+            getVisibleListsForUser: function(userId){
+                return memoruStore.collection(userLists).doc(userId).collection(ownedLists).where("visible", "==", true);
+            },
             /* Add a new document with an auto-generated id, and set that id inside the Doc (for future use) */
             persistListForUser: function(listObj,userId){
                 let newListRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc();
