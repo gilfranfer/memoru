@@ -19,7 +19,8 @@ const languages = {
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
             taskType: "Task", goalType: "Goal",
             created:"A new task has been created!", createdOn:"Created on:",
-            deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again."
+            deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
+            tasksLoaded: "Tasks found"            
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."

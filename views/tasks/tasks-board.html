@@ -62,6 +62,11 @@
 
   <!-- User's tasks with Accordion (show off) -->
   <article>
+    <div class="row">
+      <div class="col">
+        <button type="button" class="btn btn-link">{{tasksList.length}} {{i18n.tasks.tasksLoaded}}</button>
+      </div>
+    </div>
     <div class="accordion row" id="tasks-accordion">
       <div class="col-lg-6 list-group-item list-group-item-action flex-column align-items-start" 
         ng-repeat="task in tasksList | filter: {name: searchText}">
