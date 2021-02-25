@@ -65,14 +65,26 @@ memoruAngular.controller('TaskboardCtrl',
             });
         };
         
-        $scope.completeTask = function(taskObj){
+        /** Toggle Task Status from open to closed, or viceversa */
+        $scope.toggleTaskStatus = function(taskObj){
             $scope.response = {};
             
-            TasksSvc.completeUserTask(taskObj, userId).then(function(){
-                $scope.$apply(function(){
-                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.completed };
+            if(taskObj.status == 'open'){
+                //Proceed to close the task
+                TasksSvc.updateTaskStatus(taskObj, userId, 'closed').then(function(){
+                    $scope.$apply(function(){
+                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.completed };
+                    });
                 });
-            });
+            }else if(taskObj.status == 'closed'){
+                //Proceed to open the task
+                TasksSvc.updateTaskStatus(taskObj, userId, 'open').then(function(){
+                    $scope.$apply(function(){
+                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.completed };
+                    });
+                });
+            }
+            
         };
         
         /** TASKBOARD INITIAL LOAD */
@@ -128,10 +140,10 @@ memoruAngular.factory('TasksSvc',
                 //TODO Decrease Open Tasks counter
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).delete();
             },
-            completeUserTask: function(taskObj, userId){
+            updateTaskStatus: function(taskObj, userId, status){
                 //TODO Decrease Open Tasks counter
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
-                    status: 'closed'
+                    status: status
                 });
             },
             /** Returns a refernce to the tasks for the specified User, List and Status*/
