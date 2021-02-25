@@ -89,7 +89,7 @@
                 <i class="fas fa-check"></i>
               </button>
             </small>
-            <small  ng-if="task.status == 'closed'">
+            <small  ng-if="task.status == 'closed' || task.status == 'archived'">
               <button type="button" class="btn btn-sm btn-outline-primary clickable" ng-click="toggleTaskStatus(task)">
                 <i class="fas fa-undo"></i>
               </button>

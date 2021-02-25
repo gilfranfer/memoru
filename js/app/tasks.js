@@ -82,7 +82,7 @@ memoruAngular.controller('TaskboardCtrl',
                         $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.closed };
                     });
                 });
-            }else if(taskObj.status == 'closed'){
+            }else if(taskObj.status == 'closed' || taskObj.status == 'archived'){
                 //Proceed to open the task
                 TasksSvc.updateTaskStatus(taskObj, userId, 'open').then(function(){
                     TasksSvc.updateOpenTaskCounter(userId,1)
