@@ -62,7 +62,7 @@
 
   <!-- User's tasks with Accordion (show off) -->
   <article>
-    <div class="row">
+    <div class="row" ng-if="!searchText">
       <div class="col">
         <button type="button" class="btn btn-link">{{tasksList.length}} {{i18n.tasks.tasksLoaded}}</button>
       </div>
