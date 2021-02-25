@@ -3,7 +3,8 @@ const languages = {
         menu:{login:"Log in", logout: "Log out", register:"Register"},
         labels:{tasks:"Tasks"},
         btns:{
-            saveBtn:"Save", openBtn:"Open"
+            saveBtn:"Save", openBtn:"Open", 
+            close:"Complete", archive: "Archive", reopen:"Reopen", delete: "Delete"
         },
         lists:{
             addTitle:"Manage your Lists", addHint:"Type something here ...", addBtnTooltip:"Add as List",
@@ -20,7 +21,7 @@ const languages = {
             taskType: "Task", goalType: "Goal",
             created:"A new task has been created!", createdOn:"Created on:",
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
-            tasksLoaded: "Tasks found"            
+            tasksLoaded: "Tasks in this list"            
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
