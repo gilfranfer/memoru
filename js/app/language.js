@@ -15,9 +15,10 @@ const languages = {
         tasks:{ 
             title:"'s Task board", addHint:"Type here to find a task or create a new one", addBtnTooltip:"Add this Task",
             addDesc:"Type to find a task or create a new one",
+            tasknameHint:"What's the task?", taskdescHint:"Add more details to your task",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
             taskType: "Task", goalType: "Goal",
-            created:"A new task has been created!"
+            created:"A new task has been created!", createdOn:"Created on:"
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
