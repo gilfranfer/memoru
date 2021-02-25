@@ -11,7 +11,7 @@ memoruAngular.run(function($rootScope) {
 		userID: memoruConstants.test.userID, 
 		username: memoruConstants.test.username,  
 		preferences: { 
-			lists:{ selected: "LKq2M728Q6cbopFACk6P" },
+			lists:{ selected: "default" },
 			tasks:{ sorting:{by:"date", reverse:true} } 
 		}
 	}

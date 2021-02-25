@@ -1,23 +1,20 @@
 var defaultLists = [
     {
-        locked: true, visible:false,
+        id:'archive',
+        locked: true, visible:true,
         name:"Archive",
         desc:"System Archive",
         counts:{ total:0 }
     },
     {
-        locked: true, visible:false,
-        name:"Trash",
-        desc:"System Trash",
-        counts:{ total:0 }
-    },
-    {
-        locked: true, visible:false,
+        id:'default',
+        locked: true, visible:true,
         name:"Default",
         desc:"System Default",
         counts:{ total:0 }
     }
 ];
+
 /* This controller is used to Manage User's list */
 memoruAngular.controller('ListsCtrl',
 	['$rootScope','$scope','$firebaseAuth','ListsSvc','AlertsSvc',
@@ -30,6 +27,7 @@ memoruAngular.controller('ListsCtrl',
             var userlistsRef = ListsSvc.getListsCollectionForUser(userId);
             userlistsRef.onSnapshot(function(querySnapshot){
                 let lists = [];
+                if(querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
                     lists.push(doc.data());
                     console.log("List:",doc.data().name);
@@ -153,8 +151,13 @@ memoruAngular.factory('ListsSvc', ['$rootScope',
             },
             /* Add a new document with an auto-generated id, and set that id inside the Doc (for future use) */
             persistListForUser: function(listObj,userId){
-                let newListRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc();
-                listObj.id = newListRef.id
+                let newListRef = undefined;
+                if(listObj.id){
+                    newListRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc(listObj.id);
+                }else{
+                    newListRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc();
+                    listObj.id = newListRef.id
+                }
                 return newListRef.set(listObj);
             },
             /* Update document */
