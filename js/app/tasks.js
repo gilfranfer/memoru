@@ -10,6 +10,10 @@ memoruAngular.controller('TaskboardCtrl',
 	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
     function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
         
+        let userId = $rootScope.activeSession.userID;
+        let openTaskStauts = 'open';
+        $scope.taskType = 'task';
+
         /** METHODS */
         $scope.loadTasksWithStatus = function(status){
             $rootScope.loadedTasksStatus = status;
@@ -17,40 +21,45 @@ memoruAngular.controller('TaskboardCtrl',
             let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList, status );
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
+                
+                if(querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
+                    // var source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+                    // console.log(source, " data: ", doc.data());
                     tasks.push(doc.data());
-                    console.log("Task:",doc.data().name);
                 });
-
+                console.log(tasks);
                 $scope.$apply(function(){
                     $rootScope.tasksList = tasks;
                 });
             });
         };
 
-        $scope.newTask = {status:'open'};
         $scope.addTask = function(){
             $scope.response = {};
-            $scope.newTask.list = $rootScope.activeList;
-            $scope.newTask.creator = $rootScope.activeSession.username;
-            $scope.newTask.createrId = $rootScope.activeSession.userID;
-            $scope.newTask.createdOn = firebase.firestore.FieldValue.serverTimestamp();
-            console.debug($scope.newTask);
-            TasksSvc.persistTaskForUser($scope.newTask,userId).then(function(){
-                $scope.newTask = {status:'open'};
+            
+            let newTask = {
+                name: $scope.searchText,
+                status: openTaskStauts,
+                list: $rootScope.activeList,
+                type: $scope.taskType,
+                creator: userId,
+                createdOn: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            // console.debug(newTask);
+            
+            TasksSvc.persistTaskForUser(newTask, userId).then(function(){
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.created };
                 });
             });
         };
-
-         
+        
         /** TASKBOARD INITIAL LOAD */
-        $scope.taskType = 'task';
+        
 
             /* Fetch all Visible Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
-            let userId = $rootScope.activeSession.userID;
             if(!$rootScope.visibleUserlists){
                 var userlistsRef = ListsSvc.getVisibleListsForUser(userId);
                 userlistsRef.onSnapshot(function(querySnapshot){

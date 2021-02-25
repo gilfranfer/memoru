@@ -1,56 +1,144 @@
-<!-- Section to Create and Search Lists -->
-<section id="search-create" class="bg-light px-4 py-2 my-4">
-  <p class="d-md-none h4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
-  <p class="d-none d-md-block display-4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
-  <hr class="my-4">
-  <form class="" name="addtaskForm" novalidate ng-submit="addTask()">
-    <div class="form-row">
-      <div class="col-10">
-        <input type="text" minlength="1" class="form-control form-control-lg" placeholder="{{i18n.tasks.addHint}}" 
-            ng-model="newtask.name" ng-required="true" aria-describedby="nameHelp"/>
-        <!-- <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.addDesc}}</small> -->
-      </div>
-      <div class="col-2">
-        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addtaskForm.$invalid"
-          data-toggle="tooltip" data-placement="top" title="{{i18n.tasks.addBtnTooltip}}">
-            <i class="fas fa-plus"></i>
-        </button>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col pt-2">
-        <div class="form-check form-check-inline">
-          <input class="" type="radio" name="taskTypeOptions" id="taskType" value="task" ng-model="taskType">
-          <label class="" for="taskType">{{i18n.tasks.taskType}}</label>
-    </div>
-        <div class="form-check form-check-inline">
-          <input class="" type="radio" name="taskTypeOptions" id="goalType" value="goal" ng-model="taskType">
-          <label class="" for="goalType">{{i18n.tasks.goalType}}</label>
+<section ng-controller="TaskboardCtrl" class="px-4 py-2">
+  <!-- Create and Search Lists -->
+  <article id="search-create" class="bg-light row p-4 mb-4">
+    <div class="col">
+      <p class="d-lg-none h4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
+      <p class="d-none d-lg-block display-4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
+      <hr class="my-4">
+      <form class="" name="addtaskForm" novalidate ng-submit="addTask()">
+        <div class="form-row">
+          <div class="col-10">
+            <input type="text" minlength="1" class="form-control form-control-lg" placeholder="{{i18n.tasks.addHint}}" 
+                ng-required="true" ng-model="searchText" aria-describedby="nameHelp"/>
+            <!-- <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.addDesc}}</small> -->
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addtaskForm.$invalid"
+              data-toggle="tooltip" data-placement="top" title="{{i18n.tasks.addBtnTooltip}}">
+                <i class="fas fa-plus"></i>
+            </button>
+          </div>
         </div>
+        <div class="form-row">
+          <div class="col pt-2">
+            <div class="form-check form-check-inline">
+              <input class="" type="radio" name="taskTypeOptions" id="taskType" value="task" ng-model="taskType">
+              <label class="" for="taskType">{{i18n.tasks.taskType}}</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="" type="radio" name="taskTypeOptions" id="goalType" value="goal" ng-model="taskType">
+              <label class="" for="goalType">{{i18n.tasks.goalType}}</label>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </article>
+
+  <article id="taskStatusButtons" class="row">
+    <div class="col"></div>
+    <div class="col text-right pr-0">
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-info clickable" ng-class="{active:loadedTasksStatus=='open'}" >
+          <input type="radio" name="options" id="option1" ng-click="loadTasksWithStatus('open')"> {{i18n.tasks.openTasks}}
+        </label>
+        <label class="btn btn-secondary clickable" ng-class="{active:loadedTasksStatus=='closed'}">
+          <input type="radio" name="options" id="option2" ng-click="loadTasksWithStatus('closed')"> {{i18n.tasks.closedTasks}}
+        </label>
       </div>
     </div>
+  </article>
+  
+  <article id="response-alerts">
+    <div class="alert alert-success" role="alert" ng-show="response.success">
+        <strong>{{response.title}}</strong> {{response.message}}
+    </div>
+    <div class="alert alert-danger" role="alert" ng-show="response.failed">
+        <strong>{{response.title}}</strong> {{response.message}}
+    </div>
+  </article>
 
-  </form>
-</section>
-
-<section>
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-info clickable" ng-class="{active:loadedTasksStatus=='open'}" >
-      <input type="radio" name="options" id="option1" ng-click="loadTasksWithStatus('open')"> {{i18n.tasks.openTasks}}
-    </label>
-    <label class="btn btn-secondary clickable" ng-class="{active:loadedTasksStatus=='closed'}">
-      <input type="radio" name="options" id="option2" ng-click="loadTasksWithStatus('closed')"> {{i18n.tasks.closedTasks}}
-    </label>
-  </div>
-</section>
-
-<section id="response-alerts">
-  <div class="alert alert-success" role="alert" ng-show="response.success">
-      <strong>{{response.title}}</strong> {{response.message}}
-  </div>
-  <div class="alert alert-danger" role="alert" ng-show="response.failed">
-      <strong>{{response.title}}</strong> {{response.message}}
-  </div>
+  <!-- User's tasks with Accordion (show off) -->
+  <article>
+    <div class="accordion row" id="tasks-accordion">
+      <div class="col-lg-6 list-group-item list-group-item-action flex-column align-items-start" 
+        ng-repeat="task in tasksList | filter: {name: searchText}">
+  
+        <!-- Task summary and actions -->
+        <div class="d-flex w-100 justify-content-between clickable" data-toggle="collapse" data-target="#collapse{{task.id}}" aria-expanded="true" aria-controls="collapse{{task.id}}">
+          <article id="task-summary">
+            <div class="row">
+              <span class="ml-2 h5" id="heading{{task.id}}">{{task.name}}</span>
+            </div>
+            <!-- <div class="row">
+              <div class="col">
+                <span class="badge badge-primary">{{list.counts.total}}</span> {{i18n.tasks.tasksInList}}
+              </div>
+            </div> -->
+          </article>
+          <article id="task-actions">
+            <small  ng-if="task.status == 'open'">
+              <button type="button" class="btn btn-sm btn-outline-success clickable" ng-click="">
+                <i class="fas fa-check"></i>
+              </button>
+            </small>
+            <small  ng-if="task.status == 'closed'">
+              <button type="button" class="btn btn-sm btn-outline-primary clickable" ng-click="">
+                <i class="fas fa-undo"></i>
+              </button>
+            </small>
+            <small>
+              <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteTask(task.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </small>
+          </article>
+        </div>
+    
+        <!-- Collapsible part  -->
+        <div id="collapse{{task.id}}" class="collapse" aria-labelledby="heading{{task.id}}" data-parent="#tasks-accordion">
+          <form class="row" name="editTaskForm{{task.id}}" novalidate ng-submit="editTask(list)">
+            <!-- Update fields Area -->
+            <div class="col-12 col-md-8 mt-4">
+              <div class="form-row">
+                <div class="col">
+                  <input type="text" minlength="1" class="form-control form-control-lg" placeholder="{{i18n.tasks.tasknameHint}}"
+                  ng-model="task.name" ng-required="true" aria-describedby="nameHelp"/>
+                </div>
+              </div>
+              <div class="form-row mt-2">
+                <div class="col">
+                  <textarea name="" class="form-control form-control-lg" ng-model="task.desc" placeholder="{{i18n.tasks.taskdescHint}}">
+                  </textarea>
+                </div>
+              </div>
+            </div>
+            <!-- Info and Save Area -->
+            <div class="col-12 col-md-4 mt-4">
+              <div class="form-row  mb-0 alert alert-info">
+                <label>{{i18n.tasks.createdOn}}</label> <br>
+                <label>{{task.createdOn.toMillis()| date: "MMM dd yyyy hh:mm"}}</label>
+              </div>
+              <div class="form-row mt-2">
+                <div class="col">
+                  <button type="submit" class="btn btn-primary btn-lg btn-block clickable" 
+                    ng-disabled="editTaskForm{{task.id}}.$invalid" title="{{i18n.btns.saveBtn}}">
+                      <i class="fas fa-save"></i>
+                  </button>
+                </div>
+                <div class="col">
+                  <button type="button" class="btn btn-primary btn-lg btn-block clickable" title="{{i18n.btns.openBtn}}">
+                      <i class="fas fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+  
+      </div>
+    </div>
+  </article>
 </section>
 
 <script>
