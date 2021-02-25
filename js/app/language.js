@@ -2,12 +2,15 @@ const languages = {
     english: {
         menu:{login:"Log in", logout: "Log out", register:"Register"},
         labels:{tasks:"Tasks"},
+        btns:{
+            saveBtn:"Save", openBtn:"Open"
+        },
         lists:{
             addTitle:"Manage your Lists", addHint:"Type something here ...", addBtnTooltip:"Add as List",
             addDesc:"Type to find a list or create a new one", alreadyExist:"A list with that name already exist.", 
-            created:"A new list has been created!", createdOn:"Lista creada en: ", 
+            created:"A new list has been created!", createdOn:"Created on:", 
             updated:"List Updated!", deleted: "The list was deleted!",
-            tasksInList:"Tasks exist in this list.", editBtnTooltip:"Guardar cambios"
+            tasksInList:"Tasks exist in this list."
         },
         tasks:{ 
             title:"'s Task board", addHint:"Type here to find a task or create a new one", addBtnTooltip:"Add this Task",
