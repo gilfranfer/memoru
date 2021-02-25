@@ -32,17 +32,15 @@
     <section class="pb-4" ng-include="'views/header.html'"></section>
     
     <!-- Main Bootstrap container -->
-  	<div class="pt-4 container">
-      <section class="" ng-controller="ListsCtrl">
+  	<div class="container-sm py-4 px-4 px-md-5 mx-md-5">
+      <!-- <section class="" ng-controller="ListsCtrl">
         <article ng-include="'views/lists/list-admin.html'"></article>
-      </section>
-      <!-- <section class="" ng-controller="TaskboardCtrl">
-        <article ng-include="'views/tasks.html'"></article>
       </section> -->
+      <article ng-include="'views/tasks/tasks-board.html'"></article>
       <main id="main" ng-view></main>
     </div>
   
-    <section ng-include="'views/footer.html'"></section>
+    <section class="p-4" ng-include="'views/footer.html'"></section>
 
     <!-- AngularJS and Firebase -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
