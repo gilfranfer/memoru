@@ -70,27 +70,38 @@ memoruAngular.controller('TaskboardCtrl',
             });
         };
         
+        $scope.closeTask = function(taskObj){
+            let newStatus = 'closed';
+            let openTasksIncrement = -1;
+            let message = $rootScope.i18n.tasks.closed;
+            $scope.updateTaskStatus(taskObj, newStatus, openTasksIncrement, message);
+        };
+        
+        $scope.reopenTask = function(taskObj){
+            let newStatus = 'open';
+            let openTasksIncrement = 1;
+            let message = $rootScope.i18n.tasks.reopened;
+            $scope.updateTaskStatus(taskObj, newStatus, openTasksIncrement, message);
+        };
+        
+        /** An archived task should */
+        $scope.archiveTask = function(taskObj){
+            let newStatus = 'archived';
+            let openTasksIncrement = -1;
+            let message = $rootScope.i18n.tasks.archived;
+            $scope.updateTaskStatus(taskObj, newStatus, openTasksIncrement, message);
+        };
+
         /** Toggle Task Status from open to closed, or viceversa */
-        $scope.toggleTaskStatus = function(taskObj){
+        $scope.updateTaskStatus = function(taskObj,newStatus, openTasksIncrement,message){
             $scope.response = {};
-            
-            if(taskObj.status == 'open'){
-                //Proceed to close the task
-                TasksSvc.updateTaskStatus(taskObj, userId, 'closed').then(function(){
-                    TasksSvc.updateOpenTaskCounter(userId,-1)
-                    $scope.$apply(function(){
-                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.closed };
-                    });
+
+            TasksSvc.updateTaskStatus(taskObj, userId, newStatus).then(function(){
+                TasksSvc.updateOpenTaskCounter(userId, openTasksIncrement)
+                $scope.$apply(function(){
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: message };
                 });
-            }else if(taskObj.status == 'closed' || taskObj.status == 'archived'){
-                //Proceed to open the task
-                TasksSvc.updateTaskStatus(taskObj, userId, 'open').then(function(){
-                    TasksSvc.updateOpenTaskCounter(userId,1)
-                    $scope.$apply(function(){
-                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.reopened };
-                    });
-                });
-            }
+            });
             
         };
         
@@ -138,17 +149,14 @@ memoruAngular.factory('TasksSvc',
         
         return{
             persistTaskForUser: function(taskObj,userId){
-                //TODO Increase Open Tasks counter
                 let newTaskRef = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc();
                 taskObj.id = newTaskRef.id
                 return newTaskRef.set(taskObj);
             },
             deleteUserTask: function(taskObj, userId){
-                //TODO Decrease Open Tasks counter
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).delete();
             },
             updateTaskStatus: function(taskObj, userId, status){
-                //TODO Decrease Open Tasks counter
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
                     status: status
                 });

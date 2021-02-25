@@ -85,17 +85,22 @@
           </article>
           <article id="task-actions">
             <small  ng-if="task.status == 'open'">
-              <button type="button" class="btn btn-sm btn-outline-success clickable" ng-click="toggleTaskStatus(task)">
+              <button type="button" class="btn btn-sm btn-outline-success clickable" title="{{i18n.btns.close}}" ng-click="closeTask(task)">
                 <i class="fas fa-check"></i>
               </button>
             </small>
+            <small  ng-if="task.status == 'open'">
+              <button type="button" class="btn btn-sm btn-outline-warning clickable" title="{{i18n.btns.archive}}" ng-click="archiveTask(task)">
+                <i class="fas fa-archive"></i>
+              </button>
+            </small>
             <small  ng-if="task.status == 'closed' || task.status == 'archived'">
-              <button type="button" class="btn btn-sm btn-outline-primary clickable" ng-click="toggleTaskStatus(task)">
+              <button type="button" class="btn btn-sm btn-outline-primary clickable" title="{{i18n.btns.reopen}}" ng-click="reopenTask(task)">
                 <i class="fas fa-undo"></i>
               </button>
             </small>
             <small>
-              <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteTask(task)">
+              <button type="button" class="btn btn-sm btn-outline-danger clickable" title="{{i18n.btns.delete}}" ng-click="deleteTask(task)">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </small>
