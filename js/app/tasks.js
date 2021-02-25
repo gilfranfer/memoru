@@ -55,6 +55,16 @@ memoruAngular.controller('TaskboardCtrl',
             });
         };
         
+        $scope.deleteTask = function(taskObj){
+            $scope.response = {};
+            
+            TasksSvc.deleteUserTask(taskObj, userId).then(function(){
+                $scope.$apply(function(){
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.deleted };
+                });
+            });
+        };
+        
         /** TASKBOARD INITIAL LOAD */
         
 
@@ -102,6 +112,9 @@ memoruAngular.factory('TasksSvc',
                 let newTaskRef = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc();
                 taskObj.id = newTaskRef.id
                 return newTaskRef.set(taskObj);
+            },
+            deleteUserTask: function(taskObj, userId){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).delete();
             },
             /** Returns a refernce to the tasks for the specified User, List and Status*/
             getTasksFromUserListWithStatus: function(userId, listId, taskStatus){

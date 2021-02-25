@@ -18,7 +18,8 @@ const languages = {
             tasknameHint:"What's the task?", taskdescHint:"Add more details to your task",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
             taskType: "Task", goalType: "Goal",
-            created:"A new task has been created!", createdOn:"Created on:"
+            created:"A new task has been created!", createdOn:"Created on:",
+            deleted:"The task was deleted!"
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
