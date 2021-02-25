@@ -16,6 +16,7 @@ memoruAngular.controller('TaskboardCtrl',
 
         /** METHODS */
         $scope.loadTasksWithStatus = function(status){
+            $scope.response = {};
             $rootScope.loadedTasksStatus = status;
 
             let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList, status );
@@ -49,6 +50,7 @@ memoruAngular.controller('TaskboardCtrl',
             // console.debug(newTask);
             
             TasksSvc.persistTaskForUser(newTask, userId).then(function(){
+                TasksSvc.updateOpenTaskCounter(userId,1)
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.created };
                 });
@@ -59,6 +61,9 @@ memoruAngular.controller('TaskboardCtrl',
             $scope.response = {};
             
             TasksSvc.deleteUserTask(taskObj, userId).then(function(){
+                if(taskObj.status=="open"){
+                    TasksSvc.updateOpenTaskCounter(userId,-1)
+                }
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.deleted };
                 });
@@ -72,15 +77,17 @@ memoruAngular.controller('TaskboardCtrl',
             if(taskObj.status == 'open'){
                 //Proceed to close the task
                 TasksSvc.updateTaskStatus(taskObj, userId, 'closed').then(function(){
+                    TasksSvc.updateOpenTaskCounter(userId,-1)
                     $scope.$apply(function(){
-                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.completed };
+                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.closed };
                     });
                 });
             }else if(taskObj.status == 'closed'){
                 //Proceed to open the task
                 TasksSvc.updateTaskStatus(taskObj, userId, 'open').then(function(){
+                    TasksSvc.updateOpenTaskCounter(userId,1)
                     $scope.$apply(function(){
-                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.completed };
+                        $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.reopened };
                     });
                 });
             }
@@ -144,6 +151,11 @@ memoruAngular.factory('TasksSvc',
                 //TODO Decrease Open Tasks counter
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
                     status: status
+                });
+            },
+            updateOpenTaskCounter: function(userId, increment){
+                return memoruStore.collection(userTasks).doc(userId).update({
+                    open: firebase.firestore.FieldValue.increment(increment)
                 });
             },
             /** Returns a refernce to the tasks for the specified User, List and Status*/

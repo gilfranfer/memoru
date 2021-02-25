@@ -49,12 +49,14 @@
     </div>
   </article>
   
-  <article id="response-alerts">
-    <div class="alert alert-success" role="alert" ng-show="response.success">
-        <strong>{{response.title}}</strong> {{response.message}}
-    </div>
-    <div class="alert alert-danger" role="alert" ng-show="response.failed">
-        <strong>{{response.title}}</strong> {{response.message}}
+  <article id="response-alerts" class="row">
+    <div class="col">
+      <div class="alert alert-success" role="alert" ng-show="response.success">
+          <strong>{{response.title}}</strong> {{response.message}}
+      </div>
+      <div class="alert alert-danger" role="alert" ng-show="response.failed">
+          <strong>{{response.title}}</strong> {{response.message}}
+      </div>
     </div>
   </article>
 
