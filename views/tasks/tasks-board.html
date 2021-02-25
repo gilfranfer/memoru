@@ -78,7 +78,7 @@
           </article>
           <article id="task-actions">
             <small  ng-if="task.status == 'open'">
-              <button type="button" class="btn btn-sm btn-outline-success clickable" ng-click="">
+              <button type="button" class="btn btn-sm btn-outline-success clickable" ng-click="completeTask(task)">
                 <i class="fas fa-check"></i>
               </button>
             </small>

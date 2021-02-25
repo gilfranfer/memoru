@@ -65,6 +65,16 @@ memoruAngular.controller('TaskboardCtrl',
             });
         };
         
+        $scope.completeTask = function(taskObj){
+            $scope.response = {};
+            
+            TasksSvc.completeUserTask(taskObj, userId).then(function(){
+                $scope.$apply(function(){
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.completed };
+                });
+            });
+        };
+        
         /** TASKBOARD INITIAL LOAD */
         
 
@@ -109,12 +119,20 @@ memoruAngular.factory('TasksSvc',
         
         return{
             persistTaskForUser: function(taskObj,userId){
+                //TODO Increase Open Tasks counter
                 let newTaskRef = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc();
                 taskObj.id = newTaskRef.id
                 return newTaskRef.set(taskObj);
             },
             deleteUserTask: function(taskObj, userId){
+                //TODO Decrease Open Tasks counter
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).delete();
+            },
+            completeUserTask: function(taskObj, userId){
+                //TODO Decrease Open Tasks counter
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
+                    status: 'closed'
+                });
             },
             /** Returns a refernce to the tasks for the specified User, List and Status*/
             getTasksFromUserListWithStatus: function(userId, listId, taskStatus){
