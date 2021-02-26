@@ -12,8 +12,9 @@ memoruAngular.run(function($rootScope) {
 		username: memoruConstants.test.username,  
 		preferences: { 
 			lists:{ initialActivelistId: "default" },
-			tasks:{ sorting:{by:"date", reverse:true} } 
-		}
+			tasks:{ sorting:{field:"date", desc:"Task name", reverse:true} }
+		},
+
 	}
     // memoruFireDb.ref().child("memoru/users/test-id/auth").once('value').then(
 	// 	function(snapshot){

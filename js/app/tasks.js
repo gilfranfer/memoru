@@ -147,8 +147,8 @@ memoruAngular.controller('TaskboardCtrl',
             }
 
             /* Set initial Task Sorting from User preferences */
-            if( !$rootScope.taskSortConfig ){
-                $rootScope.taskSortConfig = $rootScope.activeSession.preferences.tasks.sorting;
+            if( !$rootScope.activeTaskSort ){
+                $rootScope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
             }
     }]
 );

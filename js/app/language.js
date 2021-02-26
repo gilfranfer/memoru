@@ -6,12 +6,13 @@ const languages = {
             saveBtn:"Save", openBtn:"Open", 
             close:"Complete", archive: "Archive", reopen:"Reopen", delete: "Delete"
         },
+        sorting:{sortLbl:"Sort by"},
         lists:{
             addTitle:"Manage your Lists", addHint:"Type something here ...", addBtnTooltip:"Add as List",
             addDesc:"Type to find a list or create a new one", alreadyExist:"A list with that name already exist.", 
             created:"A new list has been created!", createdOn:"Created on:", 
             updated:"List Updated!", deleted: "The list was deleted!",
-            tasksInList:"Tasks exist in this list."
+            tasksInList:"Tasks exist in this list.", listLbl:"List"
         },
         tasks:{ 
             title:"'s Task board", addHint:"Type to find or create a Task", addBtnTooltip:"Add this Task",
