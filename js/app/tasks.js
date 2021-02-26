@@ -110,6 +110,11 @@ memoruAngular.controller('TaskboardCtrl',
             
         };
         
+        $scope.changeActiveList = function(list){
+            $rootScope.activeList = list;
+            $scope.loadTasksWithStatus($rootScope.loadedTasksStatus,list); 
+        };
+
         /** TASKBOARD INITIAL LOAD */
 
             /* Fetch all Visible Lists from db for the current User and set into $rootScope
