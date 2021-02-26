@@ -40,10 +40,22 @@
     <div class="col text-right pr-0">
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-info clickable" ng-class="{active:loadedTasksStatus=='open'}" >
-          <input type="radio" name="options" id="option1" ng-click="loadTasksWithStatus('open')"> {{i18n.tasks.openTasks}}
+          <input type="radio" name="options" id="option1" ng-click="loadTasksWithStatus('open')"> 
+          <span class="d-lg-none ">
+            {{i18n.tasks.openLbl}}
+          </span>
+          <span class="d-none d-lg-block">
+            {{i18n.tasks.openTasks}}
+          </span>
         </label>
         <label class="btn btn-secondary clickable" ng-class="{active:loadedTasksStatus=='closed'}">
-          <input type="radio" name="options" id="option2" ng-click="loadTasksWithStatus('closed')"> {{i18n.tasks.closedTasks}}
+          <input type="radio" name="options" id="option2" ng-click="loadTasksWithStatus('closed')"> 
+          <span class="d-lg-none ">
+            {{i18n.tasks.closedLbl}}
+          </span>
+          <span class="d-none d-lg-block">
+            {{i18n.tasks.closedTasks}}
+          </span>
         </label>
       </div>
     </div>
