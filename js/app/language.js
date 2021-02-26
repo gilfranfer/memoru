@@ -14,8 +14,7 @@ const languages = {
             tasksInList:"Tasks exist in this list."
         },
         tasks:{ 
-            title:"'s Task board", addHint:"Type here to find a task or create a new one", addBtnTooltip:"Add this Task",
-            addDesc:"Type to find a task or create a new one",
+            title:"'s Task board", addHint:"Type to find or create a Task", addBtnTooltip:"Add this Task",
             tasknameHint:"What's the task?", taskdescHint:"Add more details to your task",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
             openLbl: "Pending", closedLbl: "Completed", 
