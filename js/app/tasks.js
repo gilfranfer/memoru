@@ -15,11 +15,15 @@ memoruAngular.controller('TaskboardCtrl',
         $scope.taskType = 'task';
 
         /** METHODS */
-        $scope.loadTasksWithStatus = function(status){
+        $scope.loadTasksWithStatus = function(status, list){
             $scope.response = {};
             $rootScope.loadedTasksStatus = status;
             
-            console.debug("Loading tasks for list",$rootScope.activeList.id);
+            if(!list){
+                list= $rootScope.activeList.id;
+            }
+
+            console.debug("Loading tasks for list", list);
             let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList.id, status );
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
@@ -111,25 +115,26 @@ memoruAngular.controller('TaskboardCtrl',
             /* Fetch all Visible Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
             if(!$rootScope.visibleUserlists){
-                let userDefaultListId = $rootScope.activeSession.preferences.lists.defaultId;
-                let userDefaultList = undefined;
+                let userInitialActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
+                let activeListObj = undefined;
+                
                 var userlistsRef = ListsSvc.getVisibleListsForUser(userId);
                 userlistsRef.onSnapshot(function(querySnapshot){
                     let lists = [];
                     querySnapshot.forEach(function(listDoc) {
                         lists.push(listDoc.data());
                         // console.debug("List:",listDoc.data());
-                        if(listDoc.data().id == userDefaultListId){
-                            userDefaultList = listDoc.data();
+                        if(listDoc.data().id == userInitialActiveListId){
+                            activeListObj = listDoc.data();
                         }
                     });
 
                     /* Set initial Active List */
-                    if( !$rootScope.activeList){
-                        $rootScope.activeList = userDefaultList;
+                    if( !$rootScope.activeList ){
+                        $rootScope.activeList = activeListObj;
                     }
 
-                    $scope.loadTasksWithStatus("open"); 
+                    $scope.loadTasksWithStatus("open",activeListObj); 
                     $scope.$apply(function(){
                         $rootScope.visibleUserlists = lists;
                     });
