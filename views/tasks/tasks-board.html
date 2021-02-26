@@ -76,7 +76,8 @@
   <article>
     <div class="row" ng-if="!searchText">
       <div class="col">
-        <button type="button" class="btn btn-link">{{tasksList.length}} {{i18n.tasks.tasksLoaded}}</button>
+        <button type="button" class="btn btn-link" ng-if="tasksList.length != 1">{{tasksList.length}} {{i18n.tasks.tasksLbl}}</button>
+        <button type="button" class="btn btn-link" ng-if="tasksList.length == 1">{{tasksList.length}} {{i18n.tasks.taskLbl}}</button>
       </div>
     </div>
     <div class="accordion row" id="tasks-accordion">
