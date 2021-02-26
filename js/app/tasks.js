@@ -18,8 +18,9 @@ memoruAngular.controller('TaskboardCtrl',
         $scope.loadTasksWithStatus = function(status){
             $scope.response = {};
             $rootScope.loadedTasksStatus = status;
-
-            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList, status );
+            
+            console.debug("Loading tasks for list",$rootScope.activeList.id);
+            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList.id, status );
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
                 
@@ -42,7 +43,7 @@ memoruAngular.controller('TaskboardCtrl',
             let newTask = {
                 name: $scope.searchText,
                 status: openTaskStauts,
-                list: $rootScope.activeList,
+                list: $rootScope.activeList.id,
                 type: $scope.taskType,
                 creator: userId,
                 createdOn: firebase.firestore.FieldValue.serverTimestamp()
@@ -106,38 +107,39 @@ memoruAngular.controller('TaskboardCtrl',
         };
         
         /** TASKBOARD INITIAL LOAD */
-        
 
             /* Fetch all Visible Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
             if(!$rootScope.visibleUserlists){
+                let userDefaultListId = $rootScope.activeSession.preferences.lists.defaultId;
+                let userDefaultList = undefined;
                 var userlistsRef = ListsSvc.getVisibleListsForUser(userId);
                 userlistsRef.onSnapshot(function(querySnapshot){
                     let lists = [];
-                    querySnapshot.forEach(function(doc) {
-                        lists.push(doc.data());
-                        console.debug("List:",doc.data().name);
+                    querySnapshot.forEach(function(listDoc) {
+                        lists.push(listDoc.data());
+                        // console.debug("List:",listDoc.data());
+                        if(listDoc.data().id == userDefaultListId){
+                            userDefaultList = listDoc.data();
+                        }
                     });
 
+                    /* Set initial Active List */
+                    if( !$rootScope.activeList){
+                        $rootScope.activeList = userDefaultList;
+                    }
+
+                    $scope.loadTasksWithStatus("open"); 
                     $scope.$apply(function(){
                         $rootScope.visibleUserlists = lists;
                     });
                 });
             }
 
-            /* Set initial Active List from User preferences */
-            if( !$rootScope.activeList ){
-                $rootScope.activeList = $rootScope.activeSession.preferences.lists.selected;
-            }
-
             /* Set initial Task Sorting from User preferences */
             if( !$rootScope.taskSortConfig ){
                 $rootScope.taskSortConfig = $rootScope.activeSession.preferences.tasks.sorting;
             }
-
-            /* Load Open Tasks in Active List */
-            $scope.loadTasksWithStatus("open");           
-        
     }]
 );
 

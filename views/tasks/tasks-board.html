@@ -46,14 +46,27 @@
     </div>
   </article>
 
+  <!-- Sorting , Open/Closed -->
   <article id="taskStatusButtons" class="row">
-    <div class="col">
-      <div class="row" ng-if="!searchText">
-        <div class="col">
-          <button type="button" class="btn btn-link" ng-if="tasksList.length != 1">{{tasksList.length}} {{i18n.tasks.tasksLbl}}</button>
-          <button type="button" class="btn btn-link" ng-if="tasksList.length == 1">{{tasksList.length}} {{i18n.tasks.taskLbl}}</button>
+    <div class="col text-left pl-0">
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{activeList.name}}
+        </button>
+        <div class="dropdown-menu">
+          <!-- The active list should not appear in the dropdown,
+              because it is already displayed in the main button -->
+          <a class="dropdown-item" ng-click="setActiveList(list)"
+            ng-repeat="list in visibleUserlists | orderBy: 'name'"
+            ng-if="list.id != activeList.id" >
+            {{list.name}}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" ng-href="#!/lists/{{currentUser.$id}}">{{i18n.lists.addTitle}}</a>
         </div>
       </div>
+
     </div>
     <div class="col text-right pr-0">
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -81,6 +94,13 @@
 
   <!-- User's tasks with Accordion (show off) -->
   <article>
+    <div class="row" ng-if="!searchText">
+      <div class="col">
+        <button type="button" class="btn btn-link" ng-if="tasksList.length == 0 || !tasksList">{{i18n.tasks.notasksLbl}}</button>
+        <button type="button" class="btn btn-link" ng-if="tasksList.length == 1">{{tasksList.length}} {{i18n.tasks.taskLbl}}</button>
+        <button type="button" class="btn btn-link" ng-if="tasksList.length > 1">{{tasksList.length}} {{i18n.tasks.tasksLbl}}</button>
+      </div>
+    </div>
     <div class="accordion row" id="tasks-accordion">
       <div class="col-lg-6 list-group-item list-group-item-action flex-column align-items-start" 
         ng-repeat="task in tasksList | filter: {name: searchText}">

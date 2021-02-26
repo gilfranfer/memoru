@@ -18,7 +18,7 @@ const languages = {
             tasknameHint:"What's the task?", taskdescHint:"Add more details to your task",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
             openLbl: "Pending", closedLbl: "Completed", 
-            taskLbl: "Task", tasksLbl:"Tasks",
+            taskLbl: "Task", tasksLbl:"Tasks", notasksLbl:"No Tasks",
             taskType: "Task", goalType: "Goal",
             created:"A new task has been created!", createdOn:"Created on:",
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again."           
