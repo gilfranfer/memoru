@@ -43,7 +43,7 @@
 <section>
   <div class="accordion" id="lists-accordion">
     <div class="list-group-item list-group-item-action flex-column align-items-start" 
-      ng-repeat="list in allUserlists | filter: {name: newlist.name}">
+      ng-repeat="list in allUserlists |  orderBy:'name' | filter: {name: newlist.name} ">
 
       <!-- List summary and actions -->
       <div class="d-flex w-100 justify-content-between clickable" data-toggle="collapse" data-target="#collapse{{list.id}}" aria-expanded="true" aria-controls="collapse{{list.id}}">
