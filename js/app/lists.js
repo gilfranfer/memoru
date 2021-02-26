@@ -84,10 +84,12 @@ memoruAngular.controller('ListsCtrl',
             $scope.response = {};
             
             ListsSvc.deleteListById(listId,userId).then(function() {
+                if(listId == $rootScope.activeSession.preferences.lists.initialActivelistId){
+                    resetDefaultActiveList();
+                }
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                         message: $rootScope.i18n.lists.deleted };
-                    console.debug($scope.response.message);
                 });
             }).catch(function(error) {
                 $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), message: error};
@@ -124,11 +126,19 @@ memoruAngular.controller('ListsCtrl',
         $scope.makeListVisible = function(list,visible){
             list.visible = visible;
             ListsSvc.updateListVisibility(list,userId).then(function(){
+                if(list.id == $rootScope.activeSession.preferences.lists.initialActivelistId){
+                    resetDefaultActiveList();
+                }
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                         message: $rootScope.i18n.lists.updated };
                 });
             });
+        };
+
+        /** When a list is deleted or its visibility is updated, we need to update the user's initial active list preference to the 'default' list */
+        var resetDefaultActiveList = function(){
+            console.log("need to reset default list");
         };
 
     }]
