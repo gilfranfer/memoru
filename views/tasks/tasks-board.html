@@ -56,10 +56,9 @@
         </button>
         <div class="dropdown-menu">
           <!-- The active list should not appear in the dropdown,
-              because it is already displayed in the main button -->
+              because it is already displayed in the main button ng-if="list.id != activeList.id"  -->
           <a class="dropdown-item" ng-click="changeActiveList(list)"
-            ng-repeat="list in visibleUserlists | orderBy: 'name'"
-            ng-if="list.id != activeList.id" >
+            ng-repeat="list in visibleUserlists | orderBy: 'name'">
             {{list.name}}
           </a>
           <div class="dropdown-divider"></div>
