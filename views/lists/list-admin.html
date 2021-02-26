@@ -63,19 +63,19 @@
               <i class="fas fa-lock"></i>
             </button>
           </small>
-          <small  ng-if="!list.locked">
-            <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteList(list.id)">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </small>
-          <small  ng-if="list.visible">
+          <small  ng-if="list.visible && !list.locked">
             <button type="button" class="btn btn-sm btn-outline-info clickable" ng-click="makeListVisible(list,false)">
               <i class="fas fa-eye"></i>
             </button>
           </small>
-          <small  ng-if="!list.visible">
+          <small  ng-if="!list.visible && !list.locked">
             <button type="button" class="btn btn-sm btn-outline-secondary clickable" ng-click="makeListVisible(list,true)">
               <i class="fas fa-eye-slash"></i>
+            </button>
+          </small>
+          <small  ng-if="!list.locked">
+            <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteList(list.id)">
+              <i class="fas fa-trash-alt"></i>
             </button>
           </small>
         </article>
