@@ -35,6 +35,17 @@
     </div>
   </article>
 
+  <article id="response-alerts" class="row">
+    <div class="col">
+      <div class="alert alert-success" role="alert" ng-show="response.success">
+          <strong>{{response.title}}</strong> {{response.message}}
+      </div>
+      <div class="alert alert-danger" role="alert" ng-show="response.failed">
+          <strong>{{response.title}}</strong> {{response.message}}
+      </div>
+    </div>
+  </article>
+
   <article id="taskStatusButtons" class="row">
     <div class="col"></div>
     <div class="col text-right pr-0">
@@ -57,17 +68,6 @@
             {{i18n.tasks.closedTasks}}
           </span>
         </label>
-      </div>
-    </div>
-  </article>
-  
-  <article id="response-alerts" class="row">
-    <div class="col">
-      <div class="alert alert-success" role="alert" ng-show="response.success">
-          <strong>{{response.title}}</strong> {{response.message}}
-      </div>
-      <div class="alert alert-danger" role="alert" ng-show="response.failed">
-          <strong>{{response.title}}</strong> {{response.message}}
       </div>
     </div>
   </article>
