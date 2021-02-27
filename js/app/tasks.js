@@ -119,6 +119,21 @@ memoruAngular.controller('TaskboardCtrl',
             $rootScope.activeTaskSort = sortOption;
         };
 
+        $scope.updateTaskNameAndDesc = function(task){
+            $scope.response = {};
+            let updatedValues = {
+                name: task.name
+            };
+            if(task.desc){
+                updatedValues.desc = task.desc
+            }
+            TasksSvc.updateTask(userId, task.id, updatedValues ).then(function(){
+                $scope.$apply(function(){
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.updated };
+                });
+            });
+        };
+
         /** TASKBOARD INITIAL LOAD */
 
             /* Fetch all Visible Lists from db for the current User and set into $rootScope
@@ -177,6 +192,9 @@ memoruAngular.factory('TasksSvc',
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
                     status: status
                 });
+            },
+            updateTask: function(userId, taskId, updatedValues){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).update( updatedValues );
             },
             updateOpenTaskCounter: function(userId, increment){
                 return memoruStore.collection(userTasks).doc(userId).update({

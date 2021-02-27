@@ -161,7 +161,7 @@
     
         <!-- Collapsible part  -->
         <div id="collapse{{task.id}}" class="collapse" aria-labelledby="heading{{task.id}}" data-parent="#tasks-accordion">
-          <form class="row" name="editTaskForm{{task.id}}" novalidate ng-submit="editTask(list)">
+          <form class="row" name="editTaskForm{{task.id}}" novalidate ng-submit="updateTaskNameAndDesc(task)">
             <!-- Update fields Area -->
             <div class="col-12 col-md-8 mt-4">
               <div class="form-row">
