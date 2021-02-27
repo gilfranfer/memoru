@@ -11,30 +11,23 @@ memoruAngular.controller('TaskboardCtrl',
     function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
         
         let userId = $rootScope.activeSession.userID;
-        let openTaskStauts = 'open';
+        let newTaskStatus = 'open';
         $scope.taskType = 'task';
 
         /** METHODS */
-        $scope.loadTasksWithStatus = function(status, list){
+        $scope.loadTasksWithStatus = function(status){
             $scope.response = {};
-            $rootScope.loadedTasksStatus = status;
+            $scope.loadedTasksStatus = status;
             
-            if(!list){
-                list= $rootScope.activeList.id;
-            }
-
-            console.debug("Loading tasks for list", list);
-            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, $rootScope.activeList.id, status );
+            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus(userId, $rootScope.activeList.id, status);
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
                 
                 if(querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
-                    // var source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-                    // console.log(source, " data: ", doc.data());
                     tasks.push(doc.data());
                 });
-                // console.log(tasks);
+
                 $scope.$apply(function(){
                     $rootScope.tasksList = tasks;
                 });
@@ -46,7 +39,7 @@ memoruAngular.controller('TaskboardCtrl',
             
             let newTask = {
                 name: $scope.searchText,
-                status: openTaskStauts,
+                status: newTaskStatus,
                 list: $rootScope.activeList.id,
                 type: $scope.taskType,
                 creator: userId,
@@ -112,7 +105,7 @@ memoruAngular.controller('TaskboardCtrl',
         
         $scope.changeActiveList = function(list){
             $rootScope.activeList = list;
-            $scope.loadTasksWithStatus($rootScope.loadedTasksStatus,list); 
+            $scope.loadTasksWithStatus($scope.loadedTasksStatus); 
         };
         
         $scope.changeSort = function(sortOption){
@@ -135,18 +128,17 @@ memoruAngular.controller('TaskboardCtrl',
 
         /** TASKBOARD INITIAL LOAD */
 
-            /* Fetch all Visible Lists from db for the current User and set into $rootScope
-            Using "onSnapshot" to listen for real time changes.*/
             if(!$rootScope.visibleUserlists){
                 let userInitialActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
                 let activeListObj = undefined;
                 
+                /* Fetch all Visible Lists from db for the current User and set into $rootScope
+                Using "onSnapshot" to listen for real time changes.*/
                 var userlistsRef = ListsSvc.getVisibleListsForUser(userId);
                 userlistsRef.onSnapshot(function(querySnapshot){
                     let lists = [];
                     querySnapshot.forEach(function(listDoc) {
                         lists.push(listDoc.data());
-                        // console.debug("List:",listDoc.data());
                         if(listDoc.data().id == userInitialActiveListId){
                             activeListObj = listDoc.data();
                         }
@@ -157,10 +149,9 @@ memoruAngular.controller('TaskboardCtrl',
                         $rootScope.activeList = activeListObj;
                     }
 
-                    $scope.loadTasksWithStatus("open",activeListObj); 
-                    $scope.$apply(function(){
-                        $rootScope.visibleUserlists = lists;
-                    });
+                    /* Load Tasks for the Active List */
+                    $scope.loadTasksWithStatus("open"); 
+                    $scope.$apply(function(){ $rootScope.visibleUserlists = lists; });
                 });
             }
 
@@ -169,6 +160,7 @@ memoruAngular.controller('TaskboardCtrl',
                 $rootScope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
                 $scope.reverseSort = true;
             }
+        
     }]
 );
 
