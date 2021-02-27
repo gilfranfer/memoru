@@ -18,7 +18,7 @@ const memoruConstants = {
     },
     front:{
         app:{name:"Memoru", version: "1.0"},
-        sorting: { tasks: [{field:"name", desc:"Task name", reverse:true},{field:"type", desc:"Task type", reverse:true},
-								{field:"createdOn", desc:"Creation", reverse:true},{field:"dueDate", desc:"Due Date", reverse:true}] }
+        sorting: { tasks: [{field:"name", desc:"Task name"},{field:"type", desc:"Task type"},
+								{field:"createdOn", desc:"Creation"},{field:"dueDate", desc:"Due Date"}] }
     }
 };

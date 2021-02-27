@@ -34,7 +34,7 @@ memoruAngular.controller('TaskboardCtrl',
                     // console.log(source, " data: ", doc.data());
                     tasks.push(doc.data());
                 });
-                console.log(tasks);
+                // console.log(tasks);
                 $scope.$apply(function(){
                     $rootScope.tasksList = tasks;
                 });
@@ -114,6 +114,10 @@ memoruAngular.controller('TaskboardCtrl',
             $rootScope.activeList = list;
             $scope.loadTasksWithStatus($rootScope.loadedTasksStatus,list); 
         };
+        
+        $scope.changeSort = function(sortOption){
+            $rootScope.activeTaskSort = sortOption;
+        };
 
         /** TASKBOARD INITIAL LOAD */
 
@@ -149,6 +153,7 @@ memoruAngular.controller('TaskboardCtrl',
             /* Set initial Task Sorting from User preferences */
             if( !$rootScope.activeTaskSort ){
                 $rootScope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
+                $scope.reverseSort = true;
             }
     }]
 );

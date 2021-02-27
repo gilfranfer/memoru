@@ -12,7 +12,7 @@ memoruAngular.run(function($rootScope) {
 		username: memoruConstants.test.username,  
 		preferences: { 
 			lists:{ initialActivelistId: "default" },
-			tasks:{ sorting:{field:"date", desc:"Task name", reverse:true} }
+			tasks:{ sorting:{field:"createdOn", desc:"Creation"} }
 		},
 
 	}
