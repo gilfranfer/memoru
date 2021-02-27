@@ -100,8 +100,8 @@ memoruAngular.controller('TaskboardCtrl',
         /** Toggle Task Status from open to closed, or viceversa */
         $scope.updateTaskStatus = function(taskObj,newStatus, openTasksIncrement,message){
             $scope.response = {};
-
-            TasksSvc.updateTaskStatus(taskObj, userId, newStatus).then(function(){
+            
+            TasksSvc.updateTask(userId, taskObj.id, {status: newStatus} ).then(function(){
                 TasksSvc.updateOpenTaskCounter(userId, openTasksIncrement)
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: message };
@@ -119,15 +119,14 @@ memoruAngular.controller('TaskboardCtrl',
             $rootScope.activeTaskSort = sortOption;
         };
 
-        $scope.updateTaskNameAndDesc = function(task){
+        $scope.updateTaskNameAndDesc = function(taskObj){
             $scope.response = {};
-            let updatedValues = {
-                name: task.name
-            };
-            if(task.desc){
-                updatedValues.desc = task.desc
+            let updatedValues = { name: taskObj.name };
+            if(taskObj.desc){
+                updatedValues.desc = taskObj.desc;
             }
-            TasksSvc.updateTask(userId, task.id, updatedValues ).then(function(){
+            
+            TasksSvc.updateTask(userId, taskObj.id, updatedValues).then(function(){
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.updated };
                 });
@@ -187,11 +186,6 @@ memoruAngular.factory('TasksSvc',
             },
             deleteUserTask: function(taskObj, userId){
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).delete();
-            },
-            updateTaskStatus: function(taskObj, userId, status){
-                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
-                    status: status
-                });
             },
             updateTask: function(userId, taskId, updatedValues){
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).update( updatedValues );
