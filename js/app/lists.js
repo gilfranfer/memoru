@@ -17,8 +17,8 @@ var defaultLists = [
 
 /* This controller is used to Manage User's list */
 memoruAngular.controller('ListsCtrl',
-	['$rootScope','$scope','$firebaseAuth','ListsSvc','AlertsSvc',
-    function($rootScope,$scope,$firebaseAuth,ListsSvc,AlertsSvc){
+	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
+    function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc,AlertsSvc){
 
         /* Fetch all Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
@@ -87,6 +87,8 @@ memoruAngular.controller('ListsCtrl',
                 if(listId == $rootScope.activeSession.preferences.lists.initialActivelistId){
                     resetDefaultActiveList();
                 }
+                //Move tasks in this list to 'default' list
+                TasksSvc.moveTasktoList(userId,listId,'default');
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                         message: $rootScope.i18n.lists.deleted };
@@ -138,7 +140,7 @@ memoruAngular.controller('ListsCtrl',
 
         /** When a list is deleted or its visibility is updated, we need to update the user's initial active list preference to the 'default' list */
         var resetDefaultActiveList = function(){
-            console.log("need to reset default list");
+            console.error("need to reset default list");
         };
 
     }]

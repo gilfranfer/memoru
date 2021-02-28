@@ -191,7 +191,19 @@ memoruAngular.factory('TasksSvc',
             getTasksFromUserListWithStatus: function(userId, listId, taskStatus){
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks)
                     .where('list','==',listId).where('status','==',taskStatus);
-            }
+            },
+            moveTasktoList: function(userId, currentListId, newListId){
+                const TASKS_IN_LIST = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks);
+                TASKS_IN_LIST.where('list', '==', currentListId).get().then(snapshots => {
+                    if (snapshots.size > 0) {
+                        snapshots.forEach(taskItem => {
+                            TASKS_IN_LIST.doc(taskItem.id).update({ list: newListId })
+                            // console.log(taskItem.data());
+                        })
+                    }
+                })
+            },
+
         }
     }]
 );
