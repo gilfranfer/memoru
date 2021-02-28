@@ -189,8 +189,14 @@ memoruAngular.factory('TasksSvc',
             },
             /** Returns a refernce to the tasks for the specified User, List and Status*/
             getTasksFromUserListWithStatus: function(userId, listId, taskStatus){
-                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks)
-                    .where('list','==',listId).where('status','==',taskStatus);
+                if(listId=='archive'){
+                    /** Archive list is a special type where the messages are only in status 'archived'. 
+                     * The list was never changed from the original, so when tasks are unarchived, they can continue in the original list.*/
+                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('status','==','archived');
+                }else{
+                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks)
+                        .where('list','==',listId).where('status','==',taskStatus);
+                }
             },
             moveTasktoList: function(userId, currentListId, newListId){
                 const TASKS_IN_LIST = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks);
