@@ -1,6 +1,6 @@
 const languages = {
     english: {
-        menu:{login:"Log in", logout: "Log out", register:"Register"},
+        menu:{login:"Log in", logout: "Log out", register:"Register",preferences:"My Preferences"},
         labels:{tasks:"Tasks"},
         btns:{
             saveBtn:"Save", openBtn:"Open", 

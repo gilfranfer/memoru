@@ -209,7 +209,9 @@ memoruAngular.factory('TasksSvc',
                     }
                 })
             },
-
+            getOpenTasksCount: function(userId){
+                return memoruStore.collection(userTasks).doc(userId).get();
+            }
         }
     }]
 );

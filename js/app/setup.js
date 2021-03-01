@@ -27,3 +27,22 @@ memoruAngular.run(function($rootScope) {
 	// });
 
 });
+
+memoruAngular.controller('HeaderCtrl',
+	['$rootScope','$scope','$firebaseAuth','TasksSvc',
+    function($rootScope,$scope,$firebaseAuth,TasksSvc){
+        		
+		let counter = TasksSvc.getOpenTasksCount($rootScope.activeSession.userID);
+		counter.then( (doc) => {
+			if (doc.exists) {
+				$rootScope.openTasksCount =  doc.data();
+			} else {
+				// doc.data() will be undefined in this case
+				console.error("No Open Tasks Counter!");
+			}
+		}).catch((error) => {
+			console.log("Error getting document:", error);
+		});
+		
+    }]
+);
