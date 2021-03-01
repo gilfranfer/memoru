@@ -19,6 +19,20 @@
             </button>
           </div>
         </div>
+        <div class="form-row mt-2" ng-if="taskType=='goal'">
+          <div class="col"> 
+            <input type="number" min="0" class="form-control form-control-lg" ng-required="true" ng-model="goalValues.start">
+            <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalStart}}</small>
+          </div>
+          <div class="col"> 
+            <input type="number" min="0" class="form-control form-control-lg" ng-required="true" ng-model="goalValues.current">
+            <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalCurrent}}</small>
+          </div>
+          <div class="col"> 
+            <input type="number" min="0" class="form-control form-control-lg" ng-required="true" ng-model="goalValues.end">
+            <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalEnd}}</small>
+          </div>
+        </div>
         <div class="form-row">
           <div class="col pt-2">
             <div class="form-check form-check-inline">

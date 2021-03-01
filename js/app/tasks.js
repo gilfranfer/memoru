@@ -12,7 +12,8 @@ memoruAngular.controller('TaskboardCtrl',
         
         let userId = $rootScope.activeSession.userID;
         let newTaskStatus = 'open';
-        $scope.taskType = 'task';
+        $scope.taskType = 'goal';
+        $scope.goalValues = { start:0, current:0};
 
         /** METHODS */
         $scope.loadTasksWithStatus = function(status){
@@ -45,12 +46,18 @@ memoruAngular.controller('TaskboardCtrl',
                 creator: userId,
                 createdOn: firebase.firestore.FieldValue.serverTimestamp()
             };
+
+            if(newTask.type == 'goal'){
+                newTask.goal = $scope.goalValues; 
+            }
             // console.debug(newTask);
             
             TasksSvc.persistTaskForUser(newTask, userId).then(function(){
                 TasksSvc.updateOpenTaskCounter(userId,1)
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.created };
+                    $scope.goalValues = { start:0, current:0};
+                    $scope.searchText = "";
                 });
             });
         };

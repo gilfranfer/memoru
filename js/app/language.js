@@ -21,6 +21,7 @@ const languages = {
             openLbl: "Pending", closedLbl: "Completed", 
             taskLbl: "Task", tasksLbl:"Tasks", notasksLbl:"No Tasks",
             taskType: "Task", goalType: "Goal",
+            goalStart:"Goal Start", goalCurrent:"Goal Current", goalEnd:"Goal End",
             created:"A new task has been created!", createdOn:"Created on:",
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
             updated:"Task Updated!"          
