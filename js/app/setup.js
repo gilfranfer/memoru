@@ -12,9 +12,8 @@ memoruAngular.run(function($rootScope) {
 		username: memoruConstants.test.username,  
 		preferences: { 
 			lists:{ initialActivelistId: "default" },
-			tasks:{ sorting:{field:"createdOn", desc:"Creation"} }
+			tasks:{ sorting:{field:"createdOn", desc:"Creation"}, showGoalProgress: true }
 		},
-
 	}
     // memoruFireDb.ref().child("memoru/users/test-id/auth").once('value').then(
 	// 	function(snapshot){
