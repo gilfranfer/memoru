@@ -12,8 +12,8 @@ memoruAngular.controller('TaskboardCtrl',
         
         let userId = $rootScope.activeSession.userID;
         let newTaskStatus = 'open';
-        $scope.taskType = 'goal';
-        $scope.goalValues = { start:0, current:0};
+        $scope.taskType = 'task';
+        $scope.goalValues = { current:0};
 
         /** METHODS */
         $scope.loadTasksWithStatus = function(status){
@@ -24,13 +24,14 @@ memoruAngular.controller('TaskboardCtrl',
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
                 
-                if(querySnapshot.metadata.hasPendingWrites){return;}
+                if(!$rootScope.forceRefresh && querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
                     tasks.push(doc.data());
                 });
 
                 $scope.$apply(function(){
                     $rootScope.tasksList = tasks;
+                    $rootScope.forceRefresh = null;
                 });
             });
         };
@@ -48,15 +49,20 @@ memoruAngular.controller('TaskboardCtrl',
             };
 
             if(newTask.type == 'goal'){
-                newTask.goal = $scope.goalValues; 
+                newTask.goal = $scope.goalValues;
+                if( isNaN(newTask.goal.current) || isNaN(newTask.goal.end) ){
+                    $scope.response = {failed:true, message: $rootScope.i18n.tasks.notANumber };
+                    return;
+                }
+                newTask.goal.current = ( Number.isInteger(newTask.goal.current)? newTask.goal.current: Number(newTask.goal.current.toFixed(2)) ); 
+                newTask.goal.end = ( Number.isInteger(newTask.goal.end)? newTask.goal.end: Number(newTask.goal.end.toFixed(2)) );     
             }
-            // console.debug(newTask);
-            
+
             TasksSvc.persistTaskForUser(newTask, userId).then(function(){
                 TasksSvc.updateOpenTaskCounter(userId,1)
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.created };
-                    $scope.goalValues = { start:0, current:0};
+                    $scope.goalValues = { current:0};
                     $scope.searchText = "";
                 });
             });
@@ -125,11 +131,49 @@ memoruAngular.controller('TaskboardCtrl',
             if(taskObj.desc){
                 updatedValues.desc = taskObj.desc;
             }
+            taskObj.goalUpdate = null;
             
             TasksSvc.updateTask(userId, taskObj.id, updatedValues).then(function(){
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.updated };
                 });
+            });
+        };
+
+        $scope.increaseGoal = function(task){
+            if( isNaN(task.goalUpdate) ){
+                $scope.response = {failed:true, message: $rootScope.i18n.tasks.notANumber };
+                return;
+            }
+
+            task.goalUpdate = ( Number.isInteger(task.goalUpdate)? task.goalUpdate: Number(task.goalUpdate.toFixed(2)) ); 
+            let newCurrent = task.goal.current + task.goalUpdate;
+            if( newCurrent > task.goal.end ){
+                $scope.response = {failed:true, message: $rootScope.i18n.tasks.incrementSurpass };
+                return;
+            }
+            $rootScope.forceRefresh = true;
+            TasksSvc.updateGoalCurrent(userId, task).then(function(){
+                $rootScope.forceRefresh = null;
+            });
+        };
+        
+        $scope.decreaseGoal = function(task){
+            if( isNaN(task.goalUpdate) ){
+                $scope.response = {failed:true, message: $rootScope.i18n.tasks.notANumber };
+                return;
+            }
+
+            task.goalUpdate = ( Number.isInteger(task.goalUpdate)? task.goalUpdate: Number(task.goalUpdate.toFixed(2)) ); 
+            let newCurrent = task.goal.current - task.goalUpdate;
+            if( newCurrent < 0){
+                $scope.response = {failed:true, message: $rootScope.i18n.tasks.decrementSurpass };
+                return;
+            }
+            $rootScope.forceRefresh = true;
+            task.goalUpdate= task.goalUpdate *-1;
+            TasksSvc.updateGoalCurrent(userId, task).then(function(){
+                $rootScope.forceRefresh = null;
             });
         };
 
@@ -171,6 +215,32 @@ memoruAngular.controller('TaskboardCtrl',
     }]
 );
 
+memoruAngular.controller('TaskEditCtrl',
+	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
+    function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
+        /** METHODS */
+    
+
+        /** TASK EDIT INITIAL LOAD */
+            let taskID = "";
+            TasksSvc.getUserTaskByID($rootScope.activeSession.userID, taskID);
+            if(!$rootScope.visibleUserlists){
+                console.log("Loading Visible Tasks");
+                /* Fetch all Visible Lists from db for the current User and set into $rootScope
+                Using "onSnapshot" to listen for real time changes.*/
+                ListsSvc.getVisibleListsForUser($rootScope.activeSession.userID).onSnapshot(function(querySnapshot){
+                    let lists = [];
+                    querySnapshot.forEach(function(listDoc) {
+                        lists.push(listDoc.data());
+                    });
+
+                    $scope.$apply(function(){ $rootScope.visibleUserlists = lists; });
+                });
+            }   
+        
+    }]
+);
+
 memoruAngular.factory('TasksSvc',
     ['$rootScope',
 	function($rootScope){
@@ -192,6 +262,11 @@ memoruAngular.factory('TasksSvc',
             updateOpenTaskCounter: function(userId, increment){
                 return memoruStore.collection(userTasks).doc(userId).update({
                     open: firebase.firestore.FieldValue.increment(increment)
+                });
+            },
+            updateGoalCurrent: function(userId, taskObj){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskObj.id).update({
+                    "goal.current": firebase.firestore.FieldValue.increment(taskObj.goalUpdate)
                 });
             },
             /** Returns a refernce to the tasks for the specified User, List and Status*/
