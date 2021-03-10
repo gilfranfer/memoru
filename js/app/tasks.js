@@ -1,4 +1,4 @@
-/* The Taskboard controller is used to Manage User's list of tasks. 
+/* The TaskCtrl controller is used to Manage User's list of tasks and Edit Task. 
  It includes actions to Create, Delete, Close and Archive tasks. 
  On Taskboard init, we need to:
     - Fetch User Visible Lists (to use in the "list selector")
@@ -6,7 +6,7 @@
     - Set Task Sorting preferences 
     - Load Open tasks for the Active List
 */
-memoruAngular.controller('TaskboardCtrl',
+memoruAngular.controller('TaskCtrl',
 	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
     function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
         
@@ -16,11 +16,18 @@ memoruAngular.controller('TaskboardCtrl',
         $scope.goalValues = { current:0};
 
         /** METHODS */
-        $scope.loadTasksWithStatus = function(status){
+
+        /** Load tasks with specified status from the specified list. 
+         * If list is not provided, then we load from active list in scope */
+        $scope.loadTasksWithStatus = function(status, fromListId){
             $scope.response = {};
             $scope.loadedTasksStatus = status;
             
-            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus(userId, $rootScope.activeList.id, status);
+            if(!fromListId){
+                fromListId = $rootScope.activeList.id;
+            }
+
+            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus(userId, fromListId, status);
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
                 
@@ -95,7 +102,7 @@ memoruAngular.controller('TaskboardCtrl',
             $scope.updateTaskStatus(taskObj, newStatus, openTasksIncrement, message);
         };
         
-        /** An archived task should */
+        /** An archived task should reduce the number of open tasks */
         $scope.archiveTask = function(taskObj){
             let newStatus = 'archived';
             let openTasksIncrement = -1;
@@ -118,7 +125,12 @@ memoruAngular.controller('TaskboardCtrl',
         
         $scope.changeActiveList = function(list){
             $rootScope.activeList = list;
-            $scope.loadTasksWithStatus($scope.loadedTasksStatus); 
+            $scope.loadTasksWithStatus($scope.loadedTasksStatus, $rootScope.activeList.id); 
+        };
+        
+        $scope.changeTaskList = function(list){
+            $rootScope.activeList = list;
+            $scope.taskEdit.list = list.id;
         };
         
         $scope.changeSort = function(sortOption){
@@ -177,66 +189,65 @@ memoruAngular.controller('TaskboardCtrl',
             });
         };
 
-        /** TASKBOARD INITIAL LOAD */
-
-            if(!$rootScope.visibleUserlists){
-                let userInitialActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
-                let activeListObj = undefined;
-                
-                /* Fetch all Visible Lists from db for the current User and set into $rootScope
-                Using "onSnapshot" to listen for real time changes.*/
-                var userlistsRef = ListsSvc.getVisibleListsForUser(userId);
-                userlistsRef.onSnapshot(function(querySnapshot){
-                    let lists = [];
-                    querySnapshot.forEach(function(listDoc) {
-                        lists.push(listDoc.data());
-                        if(listDoc.data().id == userInitialActiveListId){
-                            activeListObj = listDoc.data();
-                        }
-                    });
-
-                    /* Set initial Active List */
-                    if( !$rootScope.activeList ){
-                        $rootScope.activeList = activeListObj;
+        /*  Fetch all Visible Lists from db for the current User and set into $rootScope Using "onSnapshot" 
+            to listen for real time changes. This is needed for both: Taskboard and TaskEdit view. */
+        let loadVisibleUserLists = function (activeListId){
+            let activeListObj = undefined;
+                    
+            ListsSvc.getVisibleListsForUser(userId).onSnapshot(function(querySnapshot){
+                let lists = [];
+                querySnapshot.forEach(function(listDoc) {
+                    lists.push(listDoc.data());
+                    if(listDoc.data().id == activeListId){
+                        activeListObj = listDoc.data();
                     }
-
-                    /* Load Tasks for the Active List */
-                    $scope.loadTasksWithStatus("open"); 
-                    $scope.$apply(function(){ $rootScope.visibleUserlists = lists; });
                 });
-            }
 
-            /* Set initial Task Sorting from User preferences */
-            if( !$rootScope.activeTaskSort ){
-                $rootScope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
-                $scope.reverseSort = true;
-            }
+                $scope.$apply(function(){ 
+                    $rootScope.visibleUserlists = lists; 
+                    $rootScope.activeList = activeListObj;
+                });
+            });
+        };
+
+        /** TASKBOARD INITIAL LOAD */
+            let taskID = "TLaAxbjAzYS6IY1VityA"; //this should come from URL 
         
-    }]
-);
-
-memoruAngular.controller('TaskEditCtrl',
-	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
-    function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
-        /** METHODS */
-    
-
-        /** TASK EDIT INITIAL LOAD */
-            let taskID = "";
-            TasksSvc.getUserTaskByID($rootScope.activeSession.userID, taskID);
-            if(!$rootScope.visibleUserlists){
-                console.log("Loading Visible Tasks");
-                /* Fetch all Visible Lists from db for the current User and set into $rootScope
-                Using "onSnapshot" to listen for real time changes.*/
-                ListsSvc.getVisibleListsForUser($rootScope.activeSession.userID).onSnapshot(function(querySnapshot){
-                    let lists = [];
-                    querySnapshot.forEach(function(listDoc) {
-                        lists.push(listDoc.data());
-                    });
-
-                    $scope.$apply(function(){ $rootScope.visibleUserlists = lists; });
+            if(taskID){
+                /* Going to Task Edit */
+                let taskReference = TasksSvc.getUserTaskByID($rootScope.activeSession.userID, taskID);
+                taskReference.then( (doc) => {
+                    if (doc.exists) {
+                        $scope.taskEdit = doc.data();
+                        if(doc.data().duedate){
+                            $scope.tempDuedate = doc.data().duedate.toDate();
+                        }
+                        loadVisibleUserLists($scope.taskEdit.list);
+                    } else {
+                        // doc.data() will be undefined in this case
+                        console.error("Task doesn't exist!");
+                    }
+                }).catch((error) => {
+                    console.error("Error getting document:", error);
                 });
-            }   
+            }else{
+                console.debug("Going to Taskboard");
+                if( !$rootScope.activeTaskSort ){
+                    console.debug("Setting Sort from Preferences");
+                    $rootScope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
+                    $scope.reverseSort = true;
+                }
+
+                //TODO: initialActivelistId should always be a visible list. When makign a list invisible, we need to set initialActivelistId to 'default'
+                if( !$rootScope.activeList || !$rootScope.visibleUserlists ){
+                    let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
+                    loadVisibleUserLists(preferredActiveListId);
+                    $scope.loadTasksWithStatus("open",preferredActiveListId);
+                }else if( !$rootScope.tasksList ){
+                    console.debug("Loading only Tasks");
+                    $scope.loadTasksWithStatus("open",$rootScope.activeList.id); 
+                }
+            }
         
     }]
 );
@@ -248,6 +259,9 @@ memoruAngular.factory('TasksSvc',
         let ownedTasks = memoruConstants.db.collections.ownedTasks;
         
         return{
+            getUserTaskByID: function(userId, taskId){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).get(); 
+            },
             persistTaskForUser: function(taskObj,userId){
                 let newTaskRef = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc();
                 taskObj.id = newTaskRef.id

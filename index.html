@@ -36,7 +36,10 @@
       <!-- <section class="" ng-controller="ListsCtrl">
         <article ng-include="'views/lists/list-admin.html'"></article>
       </section> -->
-      <article ng-include="'views/tasks/tasks-board.html'"></article>
+      <section class="" ng-controller="TaskCtrl">
+        <article ng-include="'views/tasks/task-edit.html'"></article>
+      </section>
+      <!-- <article ng-include="'views/tasks/tasks-board.html'"></article> -->
       <main id="main" ng-view></main>
     </div>
   

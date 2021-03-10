@@ -1,4 +1,4 @@
-<section ng-controller="TaskboardCtrl" class="px-4 py-2">
+<section ng-controller="TaskCtrl" class="px-4 py-2">
   <!-- Create and Search Lists -->
   <article id="search-create" class="bg-light row p-4 mb-4">
     <div class="col">
@@ -146,11 +146,6 @@
                 <i class="fas fa-check"></i>
               </button>
             </small>
-            <!-- <small class="mr-1"  ng-if="task.status == 'open'">
-              <button type="button" class="btn btn-sm btn-outline-warning clickable" title="{{i18n.btns.archive}}" ng-click="archiveTask(task)">
-                <i class="fas fa-archive"></i>
-              </button>
-            </small> -->
             <small class="mr-1"  ng-if="task.status == 'closed' || task.status == 'archived'">
               <button type="button" class="btn btn-sm btn-outline-primary clickable" title="{{i18n.btns.reopen}}" ng-click="reopenTask(task)">
                 <i class="fas fa-undo"></i>
