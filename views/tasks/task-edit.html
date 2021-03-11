@@ -1,7 +1,37 @@
+<article id="title" class="row mt-4">
+  <div class="col-12 col-md-8">
+    <p class="d-md-none h2 text-center">{{i18n.tasks.editTitle}}</p>
+    <p class="d-none d-md-block display-4 text-center">{{i18n.tasks.editTitle}}</p>
+  </div>
+</article>
+<article id="alerts" class="row mt-2">
+  <div class="col col-md-8">
+    <div class="alert alert-warning" ng-if="taskEdit.status == 'archived'">
+      <strong>{{ i18n.tasks.taskInArchive }}</strong>
+    </div>
+    <div class="alert alert-success" ng-if="taskEdit.status == 'closed'">
+      <strong>{{ i18n.tasks.taskCompleted }}</strong>
+    </div>
+  </div>
+</article>
+<article id="deletedTask" class="mt-2" ng-if="taskEdit.status == 'deleted'">
+  <div class="row">
+    <div class="col-10 offset-1 col-md-8 offset-md-2 alert alert-danger">
+      <!-- <strong>{{ response.title }}</strong>  -->
+      {{i18n.tasks.deleted}}
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-10 offset-1 col-md-8 offset-md-2 p-0">
+      <button class="btn btn-lg btn-block btn-primary"> {{i18n.btns.return}} </button>
+    </div>
+  </div>
+</article>
+
 <!-- Update Name and Desc -->
-<form class="row" name="editTaskForm" novalidate ng-submit="updateTaskNameAndDesc(taskEdit)">
+<form name="editTaskForm" class="row" novalidate ng-submit="updateTaskNameAndDesc(taskEdit)" ng-if="taskEdit.status != 'deleted'">
   <!-- Fields -->
-  <div class="col-12 col-md-8 mt-4">
+  <div class="col-12 col-md-8 mt-2">
     <!-- Task name -->
     <div class="form-row">
       <div class="col">
@@ -30,7 +60,7 @@
           </button>
           <div class="dropdown-menu">
             <a class="dropdown-item" ng-click="changeTaskList(list)"
-              ng-repeat="list in visibleUserlists | orderBy: 'name'">
+              ng-repeat="list in visibleUserlists | orderBy: 'name'" ng-if="list.id != 'archive'">
               {{list.name}}
             </a>
             <div class="dropdown-divider"></div>
@@ -98,25 +128,25 @@
 
   </div>
   <!-- Buttons -->
-  <div class="col-12 col-md-4 mt-4">
+  <div class="col-12 col-md-4 mt-2">
     <div class="form-row">
       <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'open'">
         <button type="button" class="btn btn-success btn-lg btn-block clickable text-white" title="{{i18n.btns.close}}" ng-click="closeTask(taskEdit)">
           <i class="fas fa-check"></i>
         </button>
       </div>
-      <div class="col col-md-12 mt-md-2" ng-if="task.status == 'closed' || task.status == 'archived'">
+      <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'closed' || taskEdit.status == 'archived'">
         <button type="button" class="btn btn-primary btn-lg btn-block clickable text-white" title="{{i18n.btns.reopen}}" ng-click="reopenTask(taskEdit)">
           <i class="fas fa-undo"></i>
         </button>
       </div>
       <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'open'">
-        <button type="button" class="btn btn-warning btn-lg btn-block clickable text-white" title="{{i18n.btns.delete}}" ng-click="deleteTask(taskEdit)">
+        <button type="button" class="btn btn-warning btn-lg btn-block clickable text-white" title="{{i18n.btns.archive}}" ng-click="archiveTask(taskEdit)">
           <i class="fas fa-archive"></i>
         </button>
       </div>
       <div class="col col-md-12 mt-md-2">
-        <button type="button" class="btn btn-danger btn-lg btn-block clickable text-white" title="{{i18n.btns.archive}}" ng-click="archiveTask(taskEdit)">
+        <button type="button" class="btn btn-danger btn-lg btn-block clickable text-white" title="{{i18n.btns.delete}}" ng-click="deleteTask(taskEdit)">
           <i class="fas fa-trash-alt"></i>
         </button>
       </div>

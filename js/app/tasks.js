@@ -77,13 +77,13 @@ memoruAngular.controller('TaskCtrl',
         
         $scope.deleteTask = function(taskObj){
             $scope.response = {};
-            
             TasksSvc.deleteUserTask(taskObj, userId).then(function(){
                 if(taskObj.status=="open"){
                     TasksSvc.updateOpenTaskCounter(userId,-1)
                 }
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.deleted };
+                    taskObj.status = "deleted";
                 });
             });
         };
@@ -117,6 +117,7 @@ memoruAngular.controller('TaskCtrl',
             TasksSvc.updateTask(userId, taskObj.id, {status: newStatus} ).then(function(){
                 TasksSvc.updateOpenTaskCounter(userId, openTasksIncrement)
                 $scope.$apply(function(){
+                    taskObj.status = newStatus;
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: message };
                 });
             });
@@ -211,7 +212,7 @@ memoruAngular.controller('TaskCtrl',
         };
 
         /** TASKBOARD INITIAL LOAD */
-            let taskID = "TLaAxbjAzYS6IY1VityA"; //this should come from URL 
+            let taskID = "wiFGCpyN4NoQxo0SKyEV"; //this should come from URL 
         
             if(taskID){
                 /* Going to Task Edit */

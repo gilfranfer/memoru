@@ -3,7 +3,7 @@ const languages = {
         menu:{login:"Log in", logout: "Log out", register:"Register",preferences:"My Preferences"},
         labels:{tasks:"Tasks"},
         btns:{
-            saveBtn:"Save", openBtn:"Open", 
+            saveBtn:"Save", openBtn:"Open", return:"Return to Taskboard",
             close:"Complete", archive: "Archive", reopen:"Reopen", delete: "Delete"
         },
         sorting:{sortLbl:"Sort by"},
@@ -15,6 +15,7 @@ const languages = {
             tasksInList:"Tasks exist in this list.", listLbl:"List"
         },
         tasks:{ 
+            editTitle: "Task Details",
             title:"'s Task board", addHint:"Type to find or create a Task", addBtnTooltip:"Add this Task",
             tasknameHint:"What's the task?", taskdescHint:"Add more details to your task",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
@@ -24,7 +25,8 @@ const languages = {
             goalCurrent:"Goal Current", goalEnd:"Goal End", goalUpdate:"Decrease / Increase by",
             created:"A new task has been created!", createdOn:"Created on:",
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
-            updated:"Task Updated!",
+            updated:"Task Updated!", 
+            taskInArchive:"This Task is currently Archived", taskCompleted: "This task was Completed!",
             notANumber: "Value is not a number", decrementSurpass:"Decrement would fall below zero.", incrementSurpass:"Increment would surpass the Goal."   
         },
         alerts:{
