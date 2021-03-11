@@ -139,6 +139,9 @@
             <div class="row">
               <span class="ml-2 h5" id="heading{{task.id}}">{{task.name}}</span>
             </div>
+            <div class="row" ng-show="task.duedate">
+              <small class="ml-2"">{{i18n.tasks.dueOn}} {{ task.duedate.toMillis() | date: "MMM dd yyyy hh:mm" }}</small>
+            </div>
           </article>
           <article id="task-actions">
             <small class="mr-1"  ng-if="task.status == 'open'">
