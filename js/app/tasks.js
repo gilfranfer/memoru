@@ -152,6 +152,25 @@ memoruAngular.controller('TaskCtrl',
                 });
             });
         };
+        
+        $scope.updateTask = function(taskObj){
+            $scope.response = {};
+
+            let duedateValue = document.querySelector('#duedateInput').value;
+            if(duedateValue){
+                let dateSplit = duedateValue.split("-");
+                let duedate = new Date(Number(dateSplit[0]) , Number(dateSplit[1]-1) , Number(dateSplit[2]), 0,0,0);
+                taskObj.duedate = firebase.firestore.Timestamp.fromDate( duedate );
+            }else{
+                taskObj.duedate = null; 
+            }
+            
+            TasksSvc.updateTask(userId, taskObj.id, taskObj).then(function(){
+                $scope.$apply(function(){
+                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.updated };
+                });
+            });
+        };
 
         $scope.increaseGoal = function(task){
             if( isNaN(task.goalUpdate) ){
@@ -222,6 +241,7 @@ memoruAngular.controller('TaskCtrl',
                         $scope.taskEdit = doc.data();
                         if(doc.data().duedate){
                             $scope.tempDuedate = doc.data().duedate.toDate();
+                            console.log("DueDate: ",doc.data().duedate.toMillis(),doc.data().duedate.toDate());
                         }
                         loadVisibleUserLists($scope.taskEdit.list);
                     } else {

@@ -12,6 +12,9 @@
     <div class="alert alert-success" ng-if="taskEdit.status == 'closed'">
       <strong>{{ i18n.tasks.taskCompleted }}</strong>
     </div>
+    <div class="alert alert-success" ng-if="response">
+      <strong>{{response.title}}</strong> {{response.message}}
+    </div>
   </div>
 </article>
 <article id="deletedTask" class="mt-2" ng-if="taskEdit.status == 'deleted'">
@@ -29,7 +32,7 @@
 </article>
 
 <!-- Update Name and Desc -->
-<form name="editTaskForm" class="row" novalidate ng-submit="updateTaskNameAndDesc(taskEdit)" ng-if="taskEdit.status != 'deleted'">
+<form name="editTaskForm" class="row" novalidate ng-submit="updateTask(taskEdit)" ng-if="taskEdit.status != 'deleted'">
   <!-- Fields -->
   <div class="col-12 col-md-8 mt-2">
     <!-- Task name -->
@@ -49,7 +52,7 @@
     <!-- Task Duedate and List-->
     <div class="form-row mt-2">
       <div class="col">
-        <input type="date" name="duedate" class="form-control form-control-lg" 
+        <input id="duedateInput" type="date" name="duedate" class="form-control form-control-lg" 
           ng-model="tempDuedate" placeholder="YYYY-MM-DD" ng-pattern="/^\d{4}-\d{2}-\d{2}$/">
       </div>
       <div class="col text-right pr-0">
@@ -107,15 +110,6 @@
         <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalEnd}}</small>
       </div>
     </div>
-    <!-- Goal Increase / Decrease -->
-    <!-- <div class="form-row mt-2" ng-if="taskEdit.type=='goal'">
-      <div class="col-3"><button class="btn btn-primary btn-block clickable" ng-disabled="!taskEdit.goalUpdate" ng-click="decreaseGoal(task)"><i class="fas fa-minus"></i></button></div>
-      <div class="col">
-        <input type="number" min="0" max="{{taskEdit.goal.end}}" pattern="^\d*(\.\d{0,2})?$" class="form-control " ng-required="true" ng-model="taskEdit.goalUpdate">
-        <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalUpdate}}</small>
-      </div>
-      <div class="col-3"><button class="btn btn-primary btn-block clickable" ng-disabled="!taskEdit.goalUpdate" ng-click="increaseGoal(task)"><i class="fas fa-plus"></i></button></div>
-    </div> -->
 
     
     <div class="form-row">
@@ -151,8 +145,7 @@
         </button>
       </div>
       <div class="col col-md-12 mt-md-2">
-        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" 
-          ng-disabled="editTaskForm.$invalid" title="{{i18n.btns.saveBtn}}">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" title="{{i18n.btns.saveBtn}}" ng-disabled="editTaskForm.$invalid">
             <i class="fas fa-save"></i>
         </button>
       </div>
