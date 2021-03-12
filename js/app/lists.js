@@ -35,7 +35,6 @@ memoruAngular.controller('ListsCtrl',
                 if(querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
                     lists.push(doc.data());
-                    console.log("List:",doc.data().name);
                 });
 
                 $scope.$apply(function(){

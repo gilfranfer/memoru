@@ -7,8 +7,8 @@
     - Load Open tasks for the Active List
 */
 memoruAngular.controller('TaskCtrl',
-	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
-    function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
+	['$rootScope','$scope','$routeParams','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
+    function($rootScope,$scope,$routeParams,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
         
         let userId = $rootScope.activeSession.userID;
         let newTaskStatus = 'open';
@@ -140,7 +140,7 @@ memoruAngular.controller('TaskCtrl',
         };
         
         $scope.changeSort = function(sortOption){
-            $rootScope.activeTaskSort = sortOption;
+            $scope.activeTaskSort = sortOption;
         };
 
         $scope.updateTaskNameAndDesc = function(taskObj){
@@ -260,7 +260,7 @@ memoruAngular.controller('TaskCtrl',
         };
 
         /** TASKBOARD INITIAL LOAD */
-            let taskID = "wiFGCpyN4NoQxo0SKyEV"; //this should come from URL 
+            let taskID = $routeParams.taskId;
             $scope.todayTime = new Date().getTime();
             
             if(taskID){
@@ -282,22 +282,11 @@ memoruAngular.controller('TaskCtrl',
                     console.error("Error getting document:", error);
                 });
             }else{
-                console.debug("Going to Taskboard");
-                if( !$rootScope.activeTaskSort ){
-                    console.debug("Setting Sort from Preferences");
-                    $rootScope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
-                    $scope.reverseSort = true;
-                }
-
-                //TODO: initialActivelistId should always be a visible list. When makign a list invisible, we need to set initialActivelistId to 'default'
-                if( !$rootScope.activeList || !$rootScope.visibleUserlists ){
-                    let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
-                    loadVisibleUserLists(preferredActiveListId);
-                    $scope.loadTasksWithStatus("open",preferredActiveListId);
-                }else if( !$rootScope.tasksList ){
-                    console.debug("Loading only Tasks");
-                    $scope.loadTasksWithStatus("open",$rootScope.activeList.id); 
-                }
+                $scope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
+                $scope.reverseSort = true;
+                let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
+                loadVisibleUserLists(preferredActiveListId);
+                $scope.loadTasksWithStatus("open",preferredActiveListId);
             }
         
     }]

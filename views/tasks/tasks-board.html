@@ -73,7 +73,7 @@
             {{list.name}}
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" ng-href="#!/lists/{{currentUser.$id}}">{{i18n.lists.addTitle}}</a>
+          <a class="dropdown-item" ng-href="#!/lists">{{i18n.lists.addTitle}}</a>
         </div>
       </div>
       <!-- Tasks Status Buttons -->
@@ -137,7 +137,7 @@
         <div class="d-flex w-100 justify-content-between clickable" data-toggle="collapse" data-target="#collapse{{task.id}}" aria-expanded="true" aria-controls="collapse{{task.id}}">
           <article id="task-summary">
             <div class="row" id="heading{{task.id}}">
-              <a class="ml-2 h5" ng-href="">
+              <a class="ml-2 h5" ng-href="#!/task/{{task.id}}">
                 <small>
                   <i class="far fa-comment" ng-show="task.comments > 0"></i>
                 </small>
@@ -225,11 +225,11 @@
                     <i class="fas fa-archive"></i>
                   </button>
                 </div>
-                <div class="col col-md-12 mt-md-2">
+                <!-- <div class="col col-md-12 mt-md-2">
                   <button type="button" class="btn btn-primary btn-lg btn-block clickable" title="{{i18n.btns.openBtn}}">
                       <i class="fas fa-arrow-right"></i>
                   </button>
-                </div>
+                </div> -->
                 <div class="col col-md-12 mt-md-2">
                   <button type="submit" class="btn btn-primary btn-lg btn-block clickable" 
                     ng-disabled="editTaskForm{{task.id}}.$invalid" title="{{i18n.btns.saveBtn}}">
