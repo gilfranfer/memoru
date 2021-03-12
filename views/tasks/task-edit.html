@@ -1,3 +1,5 @@
+<section class="" ng-controller="TaskCtrl">
+  
 <article id="title" class="row mt-4">
   <div class="col-12 col-md-8">
     <p class="d-md-none h2 text-center">{{i18n.tasks.editTitle}}</p>
@@ -152,3 +154,38 @@
     </div>
   </div>
 </form>
+
+<!-- Comments -->
+<article class="row mt-4">
+  <div class="col-12 col-md-8">
+    <p class="d-md-none h2 text-center">{{i18n.tasks.commentsTitle}}</p>
+    <p class="d-none d-md-block display-4 text-center">{{i18n.tasks.commentsTitle}}</p>
+  </div>
+</article>
+<section id="taskComments">
+  <form name="commentsForm" class="row mb-4" novalidate ng-submit="addComment()">
+    <div class="col-8">
+      <textarea name="" class="form-control form-control-lg" ng-model="newTaskComment" ng-required="true" placeholder="{{i18n.tasks.commentHint}}">
+      </textarea>
+    </div>
+    <div class="col-4">
+      <button type="submit" class="btn btn-block btn-lg btn-primary clickable h-100" ng-disabled="commentsForm.$invalid" >
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+  </form>
+  <span ng-if="!taskComments">{{ i18n.tasks.noComments }}</span>
+  <div class="row" ng-repeat="comment in taskComments | orderBy: 'date':true">
+    <!-- <div class="col mt-2"> -->
+      <div class="alert alert-secondary mt-2 ml-4 mr-auto">
+        <span>{{comment.text}}</span>
+        <hr class="my-0">
+        <div class="text-right">
+          <small class="text-right">{{comment.date.toMillis()| date: "MMM dd yyyy hh:mm"}}</small>
+          <small> <i class="fas fa-trash-alt clickable" ng-click="deleteComment(comment)"></i> </small>
+        </div>
+      </div>
+    <!-- </div> -->
+  </div>
+</section>
+</section>

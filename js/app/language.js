@@ -15,7 +15,7 @@ const languages = {
             tasksInList:"Tasks exist in this list.", listLbl:"List"
         },
         tasks:{ 
-            editTitle: "Task Details",
+            editTitle: "Task Details", 
             title:"'s Task board", addHint:"Type to find or create a Task", addBtnTooltip:"Add this Task",
             tasknameHint:"What's the task?", taskdescHint:"Add more details to your task",
             openTasks: "Pending Tasks", closedTasks: "Completed Tasks", 
@@ -27,7 +27,8 @@ const languages = {
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
             updated:"Task Updated!", 
             taskInArchive:"This Task is currently Archived", taskCompleted: "This task was Completed!",
-            notANumber: "Value is not a number", decrementSurpass:"Decrement would fall below zero.", incrementSurpass:"Increment would surpass the Goal."   
+            notANumber: "Value is not a number", decrementSurpass:"Decrement would fall below zero.", incrementSurpass:"Increment would surpass the Goal.",
+            commentsTitle:"Task Comments", noComments: "This task does not have comments, yet.", commentHint:"Add some comments or notes to your task."
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."

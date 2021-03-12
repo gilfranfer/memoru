@@ -234,11 +234,35 @@ memoruAngular.controller('TaskCtrl',
                 });
             });
         };
+        
+        let loadTaskComments = function (taskId){
+            let commentsRef = TasksSvc.getTaskComments(userId,taskId);
+            commentsRef.onSnapshot( (querySnapshot) => {
+                let comments = [];
+                querySnapshot.forEach(function(doc) {
+                    let comment = doc.data();
+                    comment.id= doc.id;
+                    comments.push(comment);
+                });
+
+                $scope.$apply(function(){
+                    $scope.taskComments = comments;
+                });
+            });
+        };
+
+        $scope.addComment = function(){
+            TasksSvc.persistTaskComment(userId, $scope.taskEdit.id, $scope.newTaskComment);
+        };
+        
+        $scope.deleteComment = function(comment){
+            TasksSvc.deleteTaskComment(userId, $scope.taskEdit.id, comment.id);
+        };
 
         /** TASKBOARD INITIAL LOAD */
-            let taskID;//this should come from URL 
+            let taskID = "wiFGCpyN4NoQxo0SKyEV"; //this should come from URL 
             $scope.todayTime = new Date().getTime();
-        
+            
             if(taskID){
                 /* Going to Task Edit */
                 let taskReference = TasksSvc.getUserTaskByID($rootScope.activeSession.userID, taskID);
@@ -247,9 +271,9 @@ memoruAngular.controller('TaskCtrl',
                         $scope.taskEdit = doc.data();
                         if(doc.data().duedate){
                             $scope.tempDuedate = doc.data().duedate.toDate();
-                            console.log("DueDate: ",doc.data().duedate.toMillis(),doc.data().duedate.toDate());
                         }
                         loadVisibleUserLists($scope.taskEdit.list);
+                        loadTaskComments($scope.taskEdit.id);
                     } else {
                         // doc.data() will be undefined in this case
                         console.error("Task doesn't exist!");
@@ -336,7 +360,24 @@ memoruAngular.factory('TasksSvc',
             },
             getOpenTasksCount: function(userId){
                 return memoruStore.collection(userTasks).doc(userId);
-            }
+            },
+            getTaskComments: function(userId,taskId){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).collection("comments");
+            },
+            persistTaskComment: function(userId, taskId, comment){
+                memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).collection("comments").add({
+                    text: comment, date: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).update({
+                    "comments": firebase.firestore.FieldValue.increment(1)
+                })
+            }, 
+            deleteTaskComment: function(userId, taskId, commentId){
+                memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).collection("comments").doc(commentId).delete();
+                memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).update({
+                    "comments": firebase.firestore.FieldValue.increment(-1)
+                })
+            } 
         }
     }]
 );

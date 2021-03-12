@@ -136,8 +136,13 @@
         <!-- Task summary and actions -->
         <div class="d-flex w-100 justify-content-between clickable" data-toggle="collapse" data-target="#collapse{{task.id}}" aria-expanded="true" aria-controls="collapse{{task.id}}">
           <article id="task-summary">
-            <div class="row">
-              <span class="ml-2 h5" id="heading{{task.id}}">{{task.name}}</span>
+            <div class="row" id="heading{{task.id}}">
+              <a class="ml-2 h5" ng-href="">
+                <small>
+                  <i class="far fa-comment" ng-show="task.comments > 0"></i>
+                </small>
+                {{task.name}}
+              </a>
             </div>
             <div class="row" ng-show="task.duedate && activeSession.preferences.tasks.showDuedate">
               <small class="ml-2" ng-class="{'text-danger': todayTime > task.duedate.toMillis() }">{{i18n.tasks.dueOn}} {{ task.duedate.toMillis() | date: "MMM dd yyyy" }}</small>
