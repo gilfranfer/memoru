@@ -3,15 +3,20 @@ var defaultLists = [
         id:'archive',
         locked: true, visible:true,
         name:"Archive",
-        desc:"System Archive",
-        counts:{ total:0 }
+        desc:"System Archive"
+    },
+    {
+        id:'all',
+        locked: true, visible:true,
+        name:"All",
+        desc:"Show all tasks"
     },
     {
         id:'default',
         locked: true, visible:true,
         name:"Default",
-        desc:"System Default",
-        counts:{ total:0 }
+        desc:"System Default"
+        // counts:{ total:0 }
     }
 ];
 

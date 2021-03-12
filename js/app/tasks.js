@@ -55,6 +55,11 @@ memoruAngular.controller('TaskCtrl',
                 createdOn: firebase.firestore.FieldValue.serverTimestamp()
             };
 
+            //Any task created with 'All' list as the activeList, must go to 'default' list
+            if( newTask.list == 'all'){
+                newTask.list = 'default';
+            }
+
             if(newTask.type == 'goal'){
                 newTask.goal = $scope.goalValues;
                 if( isNaN(newTask.goal.current) || isNaN(newTask.goal.end) ){
@@ -311,9 +316,11 @@ memoruAngular.factory('TasksSvc',
                     /** Archive list is a special type where the messages are only in status 'archived'. 
                      * The list was never changed from the original, so when tasks are unarchived, they can continue in the original list.*/
                     return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('status','==','archived');
+                }else
+                if(listId=='all'){
+                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('status','==',taskStatus);
                 }else{
-                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks)
-                        .where('list','==',listId).where('status','==',taskStatus);
+                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('list','==',listId).where('status','==',taskStatus);
                 }
             },
             moveTasktoList: function(userId, currentListId, newListId){

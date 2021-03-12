@@ -34,7 +34,6 @@ memoruAngular.controller('HeaderCtrl',
         		
 		let counterRef = TasksSvc.getOpenTasksCount($rootScope.activeSession.userID);
 		counterRef.onSnapshot((doc) => {
-			console.log("Here");
 			if (doc.exists ) {
                 $scope.$apply(()=>{ $rootScope.openTasksCount =  doc.data(); });
 			} else {
