@@ -231,7 +231,8 @@ memoruAngular.controller('TaskCtrl',
         };
 
         /** TASKBOARD INITIAL LOAD */
-            let taskID = "wiFGCpyN4NoQxo0SKyEV"; //this should come from URL 
+            let taskID;//this should come from URL 
+            $scope.todayTime = new Date().getTime();
         
             if(taskID){
                 /* Going to Task Edit */

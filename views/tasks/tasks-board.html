@@ -140,7 +140,7 @@
               <span class="ml-2 h5" id="heading{{task.id}}">{{task.name}}</span>
             </div>
             <div class="row" ng-show="task.duedate">
-              <small class="ml-2"">{{i18n.tasks.dueOn}} {{ task.duedate.toMillis() | date: "MMM dd yyyy hh:mm" }}</small>
+              <small class="ml-2" ng-class="{'text-danger': todayTime > task.duedate.toMillis() }">{{i18n.tasks.dueOn}} {{ task.duedate.toMillis() | date: "MMM dd yyyy" }}</small>
             </div>
           </article>
           <article id="task-actions">
