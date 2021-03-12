@@ -51,7 +51,8 @@ memoruAngular.controller('TaskCtrl',
                 status: newTaskStatus,
                 list: $rootScope.activeList.id,
                 type: $scope.taskType,
-                creator: userId,
+                // creator: userId,
+                visible: true,
                 createdOn: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -331,7 +332,8 @@ memoruAngular.factory('TasksSvc',
                     return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('status','==','archived');
                 }else
                 if(listId=='all'){
-                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('status','==',taskStatus);
+                    /** Fetch only visible tasks, to avoid showing taks for list that are supposed to be secret */
+                    return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('status','==',taskStatus).where('visible','==',true);
                 }else{
                     return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('list','==',listId).where('status','==',taskStatus);
                 }
@@ -343,6 +345,16 @@ memoruAngular.factory('TasksSvc',
                         snapshots.forEach(taskItem => {
                             TASKS_IN_LIST.doc(taskItem.id).update({ list: newListId })
                             // console.log(taskItem.data());
+                        })
+                    }
+                })
+            },
+            changeTaskVisibility: function(userId, currentListId, isVisible){
+                const TASKS_IN_LIST = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks);
+                TASKS_IN_LIST.where('list', '==', currentListId).get().then(snapshots => {
+                    if (snapshots.size > 0) {
+                        snapshots.forEach(taskItem => {
+                            TASKS_IN_LIST.doc(taskItem.id).update({ visible: isVisible })
                         })
                     }
                 })

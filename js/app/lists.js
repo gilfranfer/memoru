@@ -32,7 +32,7 @@ memoruAngular.controller('ListsCtrl',
             var userlistsRef = ListsSvc.getListsCollectionForUser(userId);
             userlistsRef.onSnapshot(function(querySnapshot){
                 let lists = [];
-                if(querySnapshot.metadata.hasPendingWrites){return;}
+                // if(querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
                     lists.push(doc.data());
                 });
@@ -46,14 +46,14 @@ memoruAngular.controller('ListsCtrl',
         
         $scope.createDefaultLists = function(){
             defaultLists.forEach(function(list){
-                list.creator = "System";
+                // list.creator = "System";
                 list.createdOn = firebase.firestore.FieldValue.serverTimestamp();
                 ListsSvc.persistListForUser(list,userId);
             });
         };
         
         /** Only System default lists are locked */
-        $scope.newlist={locked:false, visible:true,counts:{total:0, open:0},desc:''};
+        $scope.newlist={locked:false, visible:true, desc:''};
         $scope.addNewList = function(){
             $scope.response = {};
             let querySnapshot = ListsSvc.getUserListByName(userId,$scope.newlist.name);
@@ -67,11 +67,11 @@ memoruAngular.controller('ListsCtrl',
                 //Create a new list only if another one does not already exist with the same name
                 else{
                     // $scope.newlist.creator = $rootScope.activeSession.username;
-                    $scope.newlist.creator = $rootScope.activeSession.userID;
+                    // $scope.newlist.creator = $rootScope.activeSession.userID;
                     $scope.newlist.createdOn = firebase.firestore.FieldValue.serverTimestamp();
 
                     ListsSvc.persistListForUser($scope.newlist,userId).then(function(){
-                        $scope.newlist={locked:false, visible:true,counts:{total:0, open:0},desc:''};
+                        $scope.newlist={locked:false, visible:true,desc:''};
                         $scope.$apply(function(){
                             $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                                 message: $rootScope.i18n.lists.created };
@@ -103,10 +103,11 @@ memoruAngular.controller('ListsCtrl',
             });
         };
         
+        /** When editing a list, the name can be updated and it could match with an existing list,
+         * so we must check first if another list already exists with the same name. */
         $scope.editList = function(list){
             $scope.response = {};
-            let querySnapshot = ListsSvc.getUserListByNameAndId(userId, list.name, list.id);
-            querySnapshot.then(function(data){
+            ListsSvc.getUserListByNameAndId(userId, list.name, list.id).then(function(data){
                 if(data.size>0){
                     $scope.$apply(function(){
                         $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), 
@@ -130,8 +131,12 @@ memoruAngular.controller('ListsCtrl',
         };
 
         $scope.makeListVisible = function(list,visible){
+            $scope.response = {};
             list.visible = visible;
             ListsSvc.updateListVisibility(list,userId).then(function(){
+                /* Task visibility changes according to the list visibility. 
+                    This is useful when we want to display 'all' tasks, but not showing the ones for list visible=false */
+                TasksSvc.changeTaskVisibility(userId,list.id,visible);
                 if(list.id == $rootScope.activeSession.preferences.lists.initialActivelistId){
                     resetDefaultActiveList();
                 }
@@ -179,7 +184,7 @@ memoruAngular.factory('ListsSvc', ['$rootScope',
             /* Update document */
             updateListForUser: function(listObj,userId){
                 let listRef = memoruStore.collection(userLists).doc(userId).collection(ownedLists).doc(listObj.id);
-                return listRef.set(listObj);
+                return listRef.update({name:listObj.name, desc:listObj.desc});
             },
             /* Update List visible field */
             updateListVisibility: function(listObj,userId){
