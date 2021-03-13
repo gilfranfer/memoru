@@ -6,9 +6,9 @@ var memoruAngular = angular.module('memoruApp',['ngRoute','firebase']);
 /* Configure application routes */
 memoruAngular.config(function($routeProvider, $locationProvider) {
 	$routeProvider
-	// .when('/home', {
-	//   templateUrl: 'views/landing.html'
-	// })
+	.when('/about', {
+	  templateUrl: 'views/about.html'
+	})
 	// .when('/register', {
 	//   templateUrl: 'views/register.html',
 	//   controller: 'SignUpCtrl'
