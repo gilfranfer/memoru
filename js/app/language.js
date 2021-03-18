@@ -4,7 +4,8 @@ const languages = {
         labels:{tasks:"Tasks"},
         btns:{
             saveBtn:"Save", openBtn:"Open", return:"Return to Taskboard",
-            close:"Complete", archive: "Archive", reopen:"Reopen", delete: "Delete"
+            close:"Complete", archive: "Archive", reopen:"Reopen", delete: "Delete",
+            yes:"Yes", no: "No"
         },
         sorting:{sortLbl:"Sort by"},
         lists:{
