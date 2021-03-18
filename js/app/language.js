@@ -30,6 +30,16 @@ const languages = {
             notANumber: "Value is not a number", decrementSurpass:"Decrement would fall below zero.", incrementSurpass:"Increment would surpass the Goal.",
             commentsTitle:"Task Comments", noComments: "This task does not have comments, yet.", commentHint:"Add some comments or notes to your task."
         },
+        pref:{
+            title:"Preferences", 
+            initListTitle:"Select the Initial Active List", initListDesc:"The list you want to be selected when opening Memoru",
+            sortByTitle:"Sort tasks by", sortByDesc: "Select the default sorting for yout tasks list",
+            duedateTitle:"Show Due date", duedateDesc: "Display the due date in the Task list",
+            progressBarTitle:"Show Progress bar", progressBarDesc: "Display the progress bar in the Task list",
+            progressValTitle:"Show Progress value", progressValDesc: "Display the progress value on top of the bar",
+            progressTypeTitle:"Progress value as", progressTypeDesc: "Display the progress value as Percentage or Detail", 
+            typePerc: "Percentage %", typeDesc: "Detail x/y", saved:"Preferences Saved!"
+        },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
         }

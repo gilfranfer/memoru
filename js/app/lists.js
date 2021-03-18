@@ -24,7 +24,7 @@ var defaultLists = [
 memoruAngular.controller('ListsCtrl',
 	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
     function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc,AlertsSvc){
-
+        
         /* Fetch all Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
         let userId = $rootScope.activeSession.userID;

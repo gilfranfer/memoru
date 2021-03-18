@@ -22,3 +22,11 @@ const memoruConstants = {
 								{field:"createdOn", desc:"Creation"},{field:"duedate", desc:"Due Date"}] }
     }
 };
+
+const defaultPreferences = {
+    // preferences: { 
+        lists:{ initialActivelistId: "default" },
+        tasks:{ sorting:{field:"createdOn", desc:"Creation"}, showDuedate: true },
+        goals:{ showBar: true, showProgress:true, progressOn:"desc"/*"perc"*/   }
+    // }
+}

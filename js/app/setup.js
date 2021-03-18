@@ -28,7 +28,7 @@ memoruAngular.config(function($routeProvider, $locationProvider) {
 	})
 	.when('/preferences', {
 	  templateUrl: 'views/preferences.html'
-	//   controller: 'CustomizeCtrl',
+	//   controller: 'PreferencesCtrl',
 	//   resolve: {
 	// 	currentAuth: function(SignUpSvc){
 	// 	  return SignUpSvc.isUserLoggedIn();
@@ -62,21 +62,28 @@ memoruAngular.run(function($rootScope,$location){
 });
 
 /* Run function is executed after .config, and before .controller */
-memoruAngular.run(function($rootScope) {
+memoruAngular.run(function($rootScope, PreferencesSvc, $location) {
 	$rootScope.appConstants = memoruConstants.front;
     $rootScope.i18n = languages.english;
+	
 	$rootScope.activeSession = { 
 		userID: memoruConstants.test.userID, 
 		username: memoruConstants.test.username,  
-		preferences: { 
-			lists:{ initialActivelistId: "default" },
-			tasks:{ sorting:{field:"createdOn", desc:"Creation"}, showDuedate: true },
-			goals:{ showBar: true, showProgress:true, progressOn:"desc"/*"perc"*/   }
-		}
+		preferences: defaultPreferences
 	};
 
+	// Load preferences from Firestore
+	PreferencesSvc.getUserPreferences($rootScope.activeSession.userID).then( (doc) => {
+		if (doc.exists) {
+			$rootScope.$apply(()=>{ $rootScope.activeSession.preferences = doc.data().preferences });
+		} else {
+			// doc.data() will be undefined in this case
+			console.error("No User Preferences. Using default ones.");
+		}
+	});
+
 	/* Catch routeChangeErrors from $routeProvider when a route has a resolve. */
-// app.run(function($rootScope,$location){
+	// app.run(function($rootScope,$location){
 	$rootScope.$on('$routeChangeError', function(event, next, previous, error){
 		if(error == 'AUTH_REQUIRED'){
       		//User is not logged in.
@@ -87,16 +94,6 @@ memoruAngular.run(function($rootScope) {
 		console.log(event, next, previous, error);
 		// $location.path( values.paths.login );
 	});
-// });
-
-    // memoruFireDb.ref().child("memoru/users/test-id/auth").once('value').then(
-	// 	function(snapshot){
-	// 		if(snapshot.val()){
-    //             console.debug("Got configurations from Firebase");
-    //             console.log(snapshot.val());
-	// 		}else{
-	// 			console.error("Configurations not available in Firebase");
-	// 		}
 	// });
 
 });
@@ -115,5 +112,73 @@ memoruAngular.controller('HeaderCtrl',
 			}
 		});
 		
+    }]
+);
+
+memoruAngular.controller('PreferencesCtrl',
+	['$rootScope','$scope','$firebaseAuth','PreferencesSvc','ListsSvc',
+    function($rootScope,$scope,$firebaseAuth,PreferencesSvc,ListsSvc){
+
+		/** User preferences are loaded, from Firebase, with angular Run Function */
+		// console.debug($rootScope.activeSession.preferences);
+		
+		// Use this aftert User Creation. Default preferences (defaultPreferences) from constants.js 
+		// PreferencesSvc.updatePreferences($rootScope.activeSession.userID, defaultPreferences ).then(function(data){
+		// 	console.log(data);
+		// });
+
+		ListsSvc.getVisibleListsForUser($rootScope.activeSession.userID).onSnapshot(function(querySnapshot){
+			let lists = [];
+			let activeListObj = undefined;    
+			let activeListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
+
+			querySnapshot.forEach(function(listDoc) {
+				lists.push(listDoc.data());
+				if(listDoc.data().id == activeListId){
+					activeListObj = listDoc.data();
+				}
+			});
+
+			$scope.$apply(function(){ 
+				$scope.visibleUserlists = lists; 
+				$scope.activeList = activeListObj;
+			});
+		});
+		
+		$scope.changeInitialList = function(list){
+			$scope.activeList = list;
+			$rootScope.activeSession.preferences.lists.initialActivelistId = list.id;
+		};
+		
+		$scope.changeInitialSort = function(sort){
+			$rootScope.activeSession.preferences.tasks.sorting.field = sort.field;
+			$rootScope.activeSession.preferences.tasks.sorting.desc = sort.desc;
+		};
+		
+		$scope.savePreferences = function(){
+			if(!$rootScope.activeSession.preferences.goals.showBar){
+				$rootScope.activeSession.preferences.goals.showProgress = false;
+			}
+			PreferencesSvc.updatePreferences($rootScope.activeSession.userID, $rootScope.activeSession.preferences).then(function(){
+				$scope.$apply(function(){
+					$scope.response = {success:true, message: $rootScope.i18n.pref.saved };
+				});
+			});
+		}
+
+    }]
+);
+
+memoruAngular.factory('PreferencesSvc', ['$rootScope', 
+	function($rootScope){
+        
+        return{
+            getUserPreferences:  function(userId){
+            	return memoruStore.collection("users").doc(userId).get(); 
+			},
+            updatePreferences: function(userId, preference){
+				return memoruStore.collection("users").doc(userId).update( {preferences: preference } );
+            }
+        }
     }]
 );
