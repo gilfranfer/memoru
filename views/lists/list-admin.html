@@ -1,5 +1,5 @@
 <!-- Section to Create and Search Lists -->
-<section class="jumbotron">
+<section class="jumbotron" ng-class="{'dark-container':activeSession.preferences.darkMode}">
   <p class="d-md-none h2 text-center">{{i18n.lists.addTitle}}</p>
   <p class="d-none d-md-block display-4 text-center">{{i18n.lists.addTitle}}</p>
   <hr class="my-4">
@@ -43,6 +43,7 @@
 <section>
   <div class="accordion" id="lists-accordion">
     <div class="list-group-item list-group-item-action flex-column align-items-start" 
+      ng-class="{'dark-listitem':activeSession.preferences.darkMode}"
       ng-repeat="list in allUserlists |  orderBy:'name' | filter: {name: newlist.name} ">
 
       <!-- List summary and actions -->
