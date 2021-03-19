@@ -49,18 +49,6 @@ memoruAngular.config(function($routeProvider, $locationProvider) {
 	$locationProvider.html5Mode(false);
 });
 
-/* Catch routeChangeErrors from $routeProvider when a route has a resolve. */
-memoruAngular.run(function($rootScope,$location){
-	$rootScope.$on('$routeChangeError', function(event, next, previous, error){
-		if(error == 'AUTH_REQUIRED'){
-      //User is not logged in.
-		}else{
-			// $rootScope.response = {error:true, message: error};
-		}
-		$location.path( values.paths.login );
-	});
-});
-
 /* Run function is executed after .config, and before .controller */
 memoruAngular.run(function($rootScope, PreferencesSvc, $location) {
 	$rootScope.appConstants = memoruConstants.front;
@@ -73,7 +61,7 @@ memoruAngular.run(function($rootScope, PreferencesSvc, $location) {
 	};
 
 	// Load preferences from Firestore
-	PreferencesSvc.getUserPreferences($rootScope.activeSession.userID).then( (doc) => {
+	PreferencesSvc.getUserPreferences($rootScope.activeSession.userID).onSnapshot( (doc) => {
 		if (doc.exists) {
 			$rootScope.$apply(()=>{ $rootScope.activeSession.preferences = doc.data().preferences });
 		} else {
@@ -111,7 +99,6 @@ memoruAngular.controller('HeaderCtrl',
 				console.error("No Open Tasks Counter!");
 			}
 		});
-		
     }]
 );
 
@@ -174,7 +161,7 @@ memoruAngular.factory('PreferencesSvc', ['$rootScope',
         
         return{
             getUserPreferences:  function(userId){
-            	return memoruStore.collection("users").doc(userId).get(); 
+            	return memoruStore.collection("users").doc(userId); 
 			},
             updatePreferences: function(userId, preference){
 				return memoruStore.collection("users").doc(userId).update( {preferences: preference } );

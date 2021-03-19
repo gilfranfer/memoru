@@ -1,6 +1,6 @@
 <section ng-controller="TaskCtrl" class="px-4 py-2">
   <!-- Create and Search Lists -->
-  <article id="search-create" class="bg-light row p-4 mb-4">
+  <article id="search-create" class="bg-light row p-4 mb-4" ng-class="{'dark-container':activeSession.preferences.darkMode}">
     <div class="col">
       <p class="d-lg-none h4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
       <p class="d-none d-lg-block display-4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
@@ -131,6 +131,7 @@
     </div>
     <div class="accordion row" id="tasks-accordion">
       <div class="col-lg-6 list-group-item list-group-item-action flex-column align-items-start" 
+        ng-class="{'dark-listitem':activeSession.preferences.darkMode}"
         ng-repeat="task in tasksList | filter: {name: searchText} | orderBy: activeTaskSort.field:reverseSort">
   
         <!-- Task summary and actions -->

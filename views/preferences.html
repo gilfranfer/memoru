@@ -15,6 +15,24 @@
    -->
   <form name="preferencesForm" novalidate ng-submit="savePreferences()">
     <hr>
+    <!-- Night mode -->
+    <div class="row">
+      <div class="col col-lg-4">
+        <label for="darkModeYesNo">{{i18n.pref.darkModeTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.darkModeDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showdarkMode" id="darkModeYes" ng-value="true" ng-model="activeSession.preferences.darkMode">
+          <label class="" for="darkModeYes">{{i18n.btns.yes}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showdarkMode" id="darkModeNo" ng-value="false" ng-model="activeSession.preferences.darkMode">
+          <label class="" for="darkModeNo">{{i18n.btns.no}}</label>
+        </div>
+      </div>
+    </div>
+    <hr>
     <!-- Active List -->
     <div class="row">
       <div class="col col-lg-4">

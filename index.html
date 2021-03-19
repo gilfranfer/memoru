@@ -25,10 +25,23 @@
   
     <style>
       .clickable{ cursor: pointer; }
+      .dark-body{
+        background-color: #222121;
+        color: #fff;
+      }
+      .dark-container{
+        background-color: #222121 !important;
+        color: #fff;
+      }
+      .dark-listitem{
+        background-color: #222121 !important;
+        color: #fff;
+        border: 1px solid #fff;
+      }
     </style>
   </head>
 
-	<body>
+	<body ng-class="{'dark-body':activeSession.preferences.darkMode}">
     <section class="pb-4" ng-include="'views/header.html'"></section>
     
     <!-- Main Bootstrap container -->

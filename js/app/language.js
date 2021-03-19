@@ -39,7 +39,8 @@ const languages = {
             progressBarTitle:"Show Progress bar", progressBarDesc: "Display the progress bar in the Task list",
             progressValTitle:"Show Progress value", progressValDesc: "Display the progress value on top of the bar",
             progressTypeTitle:"Progress value as", progressTypeDesc: "Display the progress value as Percentage or Detail", 
-            typePerc: "Percentage %", typeDesc: "Detail x/y", saved:"Preferences Saved!"
+            typePerc: "Percentage %", typeDesc: "Detail x/y", saved:"Preferences Saved!",
+            darkModeTitle:"Dark mode", darkModeDesc:""
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
