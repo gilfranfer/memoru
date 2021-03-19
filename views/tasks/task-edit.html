@@ -1,0 +1,191 @@
+<section class="" ng-controller="TaskCtrl">
+  
+<article id="title" class="row mt-4">
+  <div class="col-12 col-md-8">
+    <p class="d-md-none h2 text-center">{{i18n.tasks.editTitle}}</p>
+    <p class="d-none d-md-block display-4 text-center">{{i18n.tasks.editTitle}}</p>
+  </div>
+</article>
+<article id="alerts" class="row mt-2">
+  <div class="col col-md-8">
+    <div class="alert alert-warning" ng-if="taskEdit.status == 'archived'">
+      <strong>{{ i18n.tasks.taskInArchive }}</strong>
+    </div>
+    <div class="alert alert-success" ng-if="taskEdit.status == 'closed'">
+      <strong>{{ i18n.tasks.taskCompleted }}</strong>
+    </div>
+    <div class="alert alert-success" ng-if="response">
+      <strong>{{response.title}}</strong> {{response.message}}
+    </div>
+  </div>
+</article>
+<article id="deletedTask" class="mt-2" ng-if="taskEdit.status == 'deleted'">
+  <div class="row">
+    <div class="col-10 offset-1 col-md-8 offset-md-2 alert alert-danger">
+      <!-- <strong>{{ response.title }}</strong>  -->
+      {{i18n.tasks.deleted}}
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-10 offset-1 col-md-8 offset-md-2 p-0">
+      <button class="btn btn-lg btn-block btn-primary"> {{i18n.btns.return}} </button>
+    </div>
+  </div>
+</article>
+
+<!-- Update Name and Desc -->
+<form name="editTaskForm" class="row" novalidate ng-submit="updateTask(taskEdit)" ng-if="taskEdit.status != 'deleted'">
+  <!-- Fields -->
+  <div class="col-12 col-md-8 mt-2">
+    <!-- Task name -->
+    <div class="form-row">
+      <div class="col">
+        <input type="text" minlength="1" class="form-control form-control-lg" placeholder="{{i18n.tasks.tasknameHint}}"
+          ng-model="taskEdit.name" ng-required="true" aria-describedby=""/>
+      </div>
+    </div>
+    <!-- Task Description -->
+    <div class="form-row mt-2">
+      <div class="col">
+        <textarea name="" class="form-control form-control-lg" ng-model="taskEdit.desc" placeholder="{{i18n.tasks.taskdescHint}}">
+        </textarea>
+      </div>
+    </div>
+    <!-- Task Duedate and List-->
+    <div class="form-row mt-2">
+      <div class="col">
+        <input id="duedateInput" type="date" name="duedate" class="form-control form-control-lg" 
+          ng-model="tempDuedate" placeholder="YYYY-MM-DD" ng-pattern="/^\d{4}-\d{2}-\d{2}$/">
+      </div>
+      <div class="col text-right pr-0">
+        <div class="btn-group align-baseline">
+          <button type="button" class="btn btn-lg btn-info dropdown-toggle" 
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{i18n.lists.listLbl}}: {{activeList.name}}
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" ng-click="changeTaskList(list)"
+              ng-repeat="list in visibleUserlists | orderBy: 'name'" ng-if="list.id != 'archive' && list.id != 'all'">
+              {{list.name}}
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" ng-href="#!/lists/{{currentUser.$id}}">{{i18n.lists.addTitle}}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Task type -->
+    <div class="form-row mt-2">
+      <div class="col">
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="taskTypeOptions" id="taskType" value="task" ng-model="taskEdit.type">
+          <label class="" for="taskType">{{i18n.tasks.taskType}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="taskTypeOptions" id="goalType" value="goal" ng-model="taskEdit.type">
+          <label class="" for="goalType">{{i18n.tasks.goalType}}</label>
+        </div>
+      </div>
+    </div>
+    <!-- Goal Details -->
+    <div id="goal-progress" class="row mt-4" ng-if="taskEdit.type=='goal'">
+      <div class="col">
+        <div class="progress" style="height: 20px;">
+          <div class="progress-bar" role="progressbar" style="width: {{taskEdit.goal.current/taskEdit.goal.end*100}}%" aria-valuenow="{{taskEdit.goal.current/taskEdit.goal.end*100}}" aria-valuemin="0" aria-valuemax="100">
+            <span ng-if="activeSession.preferences.goals.showProgress && activeSession.preferences.goals.progressOn == 'perc'">
+              {{taskEdit.goal.current/taskEdit.goal.end*100| number:0}}%
+            </span>
+            <span ng-if="activeSession.preferences.goals.showProgress && activeSession.preferences.goals.progressOn == 'desc'">
+              {{taskEdit.goal.current}} / {{taskEdit.goal.end}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row mt-2"  ng-if="taskEdit.type=='goal'">
+      <div class="col"> 
+        <input type="number" min="0" max="{{taskEdit.goal.end}}" class="form-control form-control-lg" ng-required="true" ng-model="taskEdit.goal.current">
+        <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalCurrent}}</small>
+      </div>
+      <div class="col"> 
+        <input type="number" min="0" class="form-control form-control-lg" ng-required="true" ng-model="taskEdit.goal.end">
+        <small id="nameHelp" class="form-text text-muted">{{i18n.tasks.goalEnd}}</small>
+      </div>
+    </div>
+
+    
+    <div class="form-row">
+      <div class="col alert">
+        <div class=" alert-info">
+          <label class="p-2">{{i18n.tasks.createdOn}} {{taskEdit.createdOn.toMillis()| date: "MMM dd yyyy hh:mm"}}</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- Buttons -->
+  <div class="col-12 col-md-4 mt-2">
+    <div class="form-row">
+      <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'open'">
+        <button type="button" class="btn btn-success btn-lg btn-block clickable text-white" title="{{i18n.btns.close}}" ng-click="closeTask(taskEdit)">
+          <i class="fas fa-check"></i>
+        </button>
+      </div>
+      <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'closed' || taskEdit.status == 'archived'">
+        <button type="button" class="btn btn-primary btn-lg btn-block clickable text-white" title="{{i18n.btns.reopen}}" ng-click="reopenTask(taskEdit)">
+          <i class="fas fa-undo"></i>
+        </button>
+      </div>
+      <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'open'">
+        <button type="button" class="btn btn-warning btn-lg btn-block clickable text-white" title="{{i18n.btns.archive}}" ng-click="archiveTask(taskEdit)">
+          <i class="fas fa-archive"></i>
+        </button>
+      </div>
+      <div class="col col-md-12 mt-md-2">
+        <button type="button" class="btn btn-danger btn-lg btn-block clickable text-white" title="{{i18n.btns.delete}}" ng-click="deleteTask(taskEdit)">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+      <div class="col col-md-12 mt-md-2">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" title="{{i18n.btns.saveBtn}}" ng-disabled="editTaskForm.$invalid">
+            <i class="fas fa-save"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Comments -->
+<article class="row mt-4">
+  <div class="col-12 col-md-8">
+    <p class="d-md-none h2 text-center">{{i18n.tasks.commentsTitle}}</p>
+    <p class="d-none d-md-block display-4 text-center">{{i18n.tasks.commentsTitle}}</p>
+  </div>
+</article>
+<section id="taskComments">
+  <form name="commentsForm" class="row mb-4" novalidate ng-submit="addComment()">
+    <div class="col-8">
+      <textarea name="" class="form-control form-control-lg" ng-model="newTaskComment" ng-required="true" placeholder="{{i18n.tasks.commentHint}}">
+      </textarea>
+    </div>
+    <div class="col-4">
+      <button type="submit" class="btn btn-block btn-lg btn-primary clickable h-100" ng-disabled="commentsForm.$invalid" >
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+  </form>
+  <span ng-if="!taskComments">{{ i18n.tasks.noComments }}</span>
+  <div class="row" ng-repeat="comment in taskComments | orderBy: 'date':true">
+    <!-- <div class="col mt-2"> -->
+      <div class="alert alert-secondary mt-2 ml-4 mr-auto">
+        <span>{{comment.text}}</span>
+        <hr class="my-0">
+        <div class="text-right">
+          <small class="text-right">{{comment.date.toMillis()| date: "MMM dd yyyy hh:mm"}}</small>
+          <small> <i class="fas fa-trash-alt clickable" ng-click="deleteComment(comment)"></i> </small>
+        </div>
+      </div>
+    <!-- </div> -->
+  </div>
+</section>
+</section>

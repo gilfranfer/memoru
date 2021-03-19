@@ -1,0 +1,147 @@
+<section id="preferences" ng-controller="PreferencesCtrl">
+  <article id="title" class="row mt-4">
+    <div class="col">
+      <p class="d-md-none h2 text-center">{{i18n.pref.title}}</p>
+      <p class="d-none d-md-block display-4 text-center">{{i18n.pref.title}}</p>
+    </div>
+  </article>
+
+  <!-- 
+    preferences: { 
+			lists:{ initialActivelistId: "default" },
+			tasks:{ sorting:{field:"createdOn", desc:"Creation"}, showDuedate: true },
+			goals:{ showBar: true, showProgress:true, progressOn:"desc"/*"perc"*/   }
+		}
+   -->
+  <form name="preferencesForm" novalidate ng-submit="savePreferences()">
+    <hr>
+    <!-- Active List -->
+    <div class="row">
+      <div class="col col-lg-4">
+        <label for="listSelector">{{i18n.pref.initListTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.initListDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <!-- List Selector -->
+        <div id="listSelector" class="btn-group align-baseline">
+          <button type="button" class="btn btn-lg btn-info dropdown-toggle" 
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ activeList.name }}
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" ng-click="changeInitialList(list)"
+              ng-repeat="list in visibleUserlists | orderBy: 'name'">
+              {{list.name}}
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" ng-href="#!/lists">{{i18n.lists.addTitle}}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Task sorting -->
+    <div class="row">
+      <div class="col col-lg-4">
+        <label for="sortSelector">{{i18n.pref.sortByTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.sortByDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <div id="sortSelector" class="btn-group align-baseline">
+          <button type="button" class="btn btn-lg btn-info dropdown-toggle" 
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ activeSession.preferences.tasks.sorting.desc }}
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" ng-click="changeInitialSort(sortOption)"
+              ng-repeat="sortOption in appConstants.sorting.tasks | orderBy: 'desc'">
+              {{sortOption.desc}}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Due date -->
+    <div class="row">
+      <div class="col col-lg-4">
+        <label for="duedateYesNo">{{i18n.pref.duedateTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.duedateDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showDuedate" id="duedateYes" ng-value="true" ng-model="activeSession.preferences.tasks.showDuedate">
+          <label class="" for="duedateYes">{{i18n.btns.yes}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showDuedate" id="duedateNo" ng-value="false" ng-model="activeSession.preferences.tasks.showDuedate">
+          <label class="" for="duedateNo">{{i18n.btns.no}}</label>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Progress Bar -->
+    <div class="row">
+      <div class="col col-lg-4">
+        <label for="barYesNo">{{i18n.pref.progressBarTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.progressBarDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showBar" id="barYes" ng-value="true" ng-model="activeSession.preferences.goals.showBar">
+          <label class="" for="barYes">{{i18n.btns.yes}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showBar" id="barNo" ng-value="false" ng-model="activeSession.preferences.goals.showBar">
+          <label class="" for="barNo">{{i18n.btns.no}}</label>
+        </div>
+      </div>
+    </div>
+    <!-- Progress Value -->
+    <div class="row mt-3" ng-show="activeSession.preferences.goals.showBar">
+      <div class="col col-lg-4">
+        <label for="barYesNo">{{i18n.pref.progressValTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.progressValDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showProgress" id="progressYes" ng-value="true" ng-model="activeSession.preferences.goals.showProgress">
+          <label class="" for="progressYes">{{i18n.btns.yes}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="showProgress" id="progressNo" ng-value="false" ng-model="activeSession.preferences.goals.showProgress">
+          <label class="" for="progressNo">{{i18n.btns.no}}</label>
+        </div>
+      </div>
+    </div>
+    <!-- Progress value type -->
+    <div class="row mt-3" ng-show="activeSession.preferences.goals.showBar">
+      <div class="col col-lg-4">
+        <label for="barYesNo">{{i18n.pref.progressTypeTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.progressTypeDesc}}</small>
+      </div>
+      <div class="col col-lg-8">
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="progressOn" id="progressDesc" value="desc" ng-model="activeSession.preferences.goals.progressOn">
+          <label class="" for="progressDesc">{{i18n.pref.typeDesc}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="progressOn" id="progressPerc" value="perc" ng-model="activeSession.preferences.goals.progressOn">
+          <label class="" for="progressPerc">{{i18n.pref.typePerc}}</label>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Submit -->
+    <div class="row">
+      <div class="col col-md-6 offset-md-3">
+        <div class="alert alert-success" ng-if="response">
+          {{response.message}}
+        </div>
+        <button type="submit" class="btn btn-lg btn-block btn-primary clickable">
+          <i class="fas fa-save"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,126 @@
+<!-- Section to Create and Search Lists -->
+<section class="jumbotron">
+  <p class="d-md-none h2 text-center">{{i18n.lists.addTitle}}</p>
+  <p class="d-none d-md-block display-4 text-center">{{i18n.lists.addTitle}}</p>
+  <hr class="my-4">
+  <form class="" name="addListForm" novalidate ng-submit="addNewList()">
+    <div class="form-row">
+      <div class="col-10">
+        <input type="text" minlength="1" maxlength="25" class="form-control form-control-lg" placeholder="{{i18n.lists.addHint}}" 
+            ng-model="newlist.name" ng-required="true" aria-describedby="nameHelp"/>
+        <small id="nameHelp" class="form-text text-muted">{{i18n.lists.addDesc}}</small>
+      </div>
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" ng-disabled="addListForm.$invalid"
+          data-toggle="tooltip" data-placement="top" title="{{i18n.lists.addBtnTooltip}}">
+            <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<!-- <button type="button" class="btn btn-danger btn-lg btn-block clickable" ng-click="createDefaultLists()">
+  Create Default Lists
+</button> -->
+<section id="response-alerts">
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{i18n.alerts.listDelete}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="alert alert-success" role="alert" ng-show="response.success">
+      <strong>{{response.title}}</strong> {{response.message}}
+  </div>
+  <div class="alert alert-danger" role="alert" ng-show="response.failed">
+      <strong>{{response.title}}</strong> {{response.message}}
+  </div>
+</section>
+
+<!-- Section to display all the User's Lists with Accordion (show off) -->
+<section>
+  <div class="accordion" id="lists-accordion">
+    <div class="list-group-item list-group-item-action flex-column align-items-start" 
+      ng-repeat="list in allUserlists |  orderBy:'name' | filter: {name: newlist.name} ">
+
+      <!-- List summary and actions -->
+      <div class="d-flex w-100 justify-content-between clickable" data-toggle="collapse" data-target="#collapse{{list.id}}" aria-expanded="true" aria-controls="collapse{{list.id}}">
+        <article id="list-summary">
+          <div class="row">
+            <span class="ml-2 h5" id="heading{{list.id}}">{{list.name}}</span>
+          </div>
+          <!-- <div class="row">
+            <div class="col">
+              <span class="badge badge-primary">{{list.counts.total}}</span> {{i18n.lists.tasksInList}}
+            </div>
+          </div> -->
+        </article>
+        <article id="list-actions">
+          <small  ng-if="list.locked">
+            <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
+              <i class="fas fa-lock"></i>
+            </button>
+          </small>
+          <small  ng-if="list.visible && !list.locked">
+            <button type="button" class="btn btn-sm btn-outline-info clickable" ng-click="makeListVisible(list,false)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </small>
+          <small  ng-if="!list.visible && !list.locked">
+            <button type="button" class="btn btn-sm btn-outline-secondary clickable" ng-click="makeListVisible(list,true)">
+              <i class="fas fa-eye-slash"></i>
+            </button>
+          </small>
+          <small  ng-if="!list.locked">
+            <button type="button" class="btn btn-sm btn-outline-danger clickable" ng-click="deleteList(list.id)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </small>
+        </article>
+      </div>
+  
+      <!-- Collapsible part  -->
+      <div id="collapse{{list.id}}" class="collapse" aria-labelledby="heading{{list.id}}" data-parent="#lists-accordion">
+        <form class="row" name="editListForm{{list.id}}" novalidate ng-submit="editList(list)">
+          <!-- Update fields Area -->
+          <div class="col-12 col-md-8 mt-4">
+            <div class="form-row">
+              <div class="col">
+                <input type="text" minlength="1" maxlength="25" class="form-control form-control-lg" 
+                ng-model="list.name" ng-required="true" aria-describedby="nameHelp"/>
+              </div>
+            </div>
+            <div class="form-row mt-2">
+              <div class="col">
+                <textarea name="" id="" class="form-control form-control-lg" ng-model="list.desc">
+                </textarea>
+              </div>
+            </div>
+          </div>
+          <!-- Info and Save Area -->
+          <div class="col-12 col-md-4 mt-4">
+            <div class="form-row  mb-0 alert alert-info">
+              <label>{{i18n.lists.createdOn}}</label> <br>
+              <label>{{list.createdOn.toMillis()| date: "MMM dd yyyy hh:mm"}}</label>
+            </div>
+            <div class="form-row mt-2" ng-if="!list.locked">
+              <button type="submit" class="btn btn-success btn-lg btn-block clickable" 
+              ng-disabled="editListForm{{list.id}}.$invalid" title="{{i18n.btns.saveBtn}}">
+                  <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>

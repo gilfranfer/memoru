@@ -1,5 +1,9 @@
 const memoruConstants = {
     db:{ 
+        collections:{
+            userlists:"lists", ownedlists:"owned",
+            userTasks:"tasks", ownedTasks:"owned"
+        },
         folders:{
             users:"memoru/users",
             mylists: "lists/owned",
@@ -13,26 +17,16 @@ const memoruConstants = {
        userID: "test-id", username:"Test User"
     },
     front:{
-        app:{name:"Memoru", version: "1.0"}
-    },
-    defaultLists:{
-        archive: {
-            locked: true,
-            name:"Archive",
-            desc:"System Archive",
-            counts:{ total:0 }
-        },
-        trash: {
-            locked: true,
-            name:"Trash",
-            desc:"System Trash",
-            counts:{ total:0 }
-        },
-        default: {
-            locked: true,
-            name:"Default",
-            desc:"System Default",
-            counts:{ total:0 }
-        }
+        app:{name:"Memoru", version: "1.0"},
+        sorting: { tasks: [{field:"name", desc:"Task name"},{field:"type", desc:"Task type"},
+								{field:"createdOn", desc:"Creation"},{field:"duedate", desc:"Due Date"}] }
     }
 };
+
+const defaultPreferences = {
+    // preferences: { 
+        lists:{ initialActivelistId: "default" },
+        tasks:{ sorting:{field:"createdOn", desc:"Creation"}, showDuedate: true },
+        goals:{ showBar: true, showProgress:true, progressOn:"desc"/*"perc"*/   }
+    // }
+}

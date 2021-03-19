@@ -1,0 +1,71 @@
+<section id="info-section">
+
+  <div class="jumbotron">
+    <h1 class="display-3">Memoru is here!!</h1>
+    <hr class="my-4">
+    <p class="lead">
+      Keep track of your daily activities, tasks and goals. Create list to organize your task. 
+      You can even track the time you spent on each task.
+    </p>
+    <p ng-if="!currentUser">
+      <!-- Show Login and Register buttons only if no user is logged -->
+      <a role="button" class="btn btn-success btn-lg" href="#!/register">Register Now!</a>
+      <a role="button" class="btn btn-primary btn-lg" href="#!/login">or Log in</a>
+    </p>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h2>Features</h2>
+    </div>
+  </div>
+  <hr class="my-4">
+
+  <div class="row marketing">
+    <div class="col-md-6">
+      <h4>Register</h4>
+      <p>
+        Create a new user with your email address, and set your Password. 
+        You will need to verify you account, from your email. 
+        If you forget your passwor, dont worry, you can recover it anytime!
+      </p>
+
+      <h4>Authentication</h4>
+      <p>
+        After Registration, you will be automatically authenticated.
+        You can logout and login back with your email and password.
+      </p>
+
+      <h4>Manage Lists</h4>
+      <p>
+        There is a 'Default' list for your tasks, but you can always create new list, and rename it as many times as you want.
+        'Secret' lists are possible, and they will not be displayed in your task board until you make them 'Visible'.
+        If you happen to delete a List that already has associated tasks, all those tasks will be automatically moved to the 'Default' list.
+      </p>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Create Tasks and Goals</h4>
+      <p> The core idea of this simple application is to create tasks. 
+        Just type the task name on the "Search/Create" box and push the + button. 
+        If you want to place the task in an specific list, juthen select the list before clicking the + button.
+        Goals are tasks that can track progress, so you have to set a current value and the end value (goal);
+        for example when you want to track those 12 books you are planning to read this year.
+      </p>
+
+      <h4>Task board</h4>
+      <p>
+        In the main page you will see all your tasks for the selected list. 
+        You can use 'order by' to re-organize the display of your tasks. 
+        Tasks with a due date will be displayed using red color font (if they are already due). 
+        From here you will be able to 'Close' your tasks, delete, archive, and even update their description or name. 
+      </p>
+
+      <h4>Edit Task</h4>
+      <p>
+        Do you want to add comments to your task, set a due date, or move it to a different list? This is the right place to do it.
+      </p>
+    </div>
+  </div>
+
+</section>

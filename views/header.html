@@ -1,4 +1,4 @@
-<header class="mb-4">
+<header class="mb-4" ng-controller="HeaderCtrl">
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#!/about">{{appConstants.app.name}}</a>
         
@@ -29,13 +29,19 @@
           
           <!-- Menu Items when user is logged in -->
           <li class="nav-item" ng-if="activeSession">
-            <a class="nav-link text-light" ng-href="#!/tasks">
-              <span class="badge badge-danger">{{activeSession.tasks.open}}</span> {{i18n.labels.tasks}}
+            <a class="nav-link text-light" ng-href="#!/taskboard" title="{{i18n.labels.tasks}}">
+              <span class="badge badge-danger">{{openTasksCount.open}}</span>
+              <i class="fas fa-tasks"></i>
             </a>
           </li>
           <li class="nav-item" ng-if="activeSession">
-            <a class="nav-link text-light" ng-href="#!/login" ng-click="logout()">
-                {{i18n.menu.logout}}
+            <a class="nav-link text-light" ng-href="#!/preferences" title="{{i18n.menu.preferences}}">
+              <i class="fas fa-user-cog"></i>
+            </a>
+          </li>
+          <li class="nav-item" ng-if="activeSession">
+            <a class="nav-link text-light" ng-href="#!/about" ng-click="logout()" title="{{i18n.menu.logout}}">
+              <i class="fas fa-sign-out-alt"></i>
             </a>
           </li>
         </ul>
