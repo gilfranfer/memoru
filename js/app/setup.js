@@ -63,7 +63,16 @@ memoruAngular.run(function($rootScope, PreferencesSvc, $location) {
 	// Load preferences from Firestore
 	PreferencesSvc.getUserPreferences($rootScope.activeSession.userID).onSnapshot( (doc) => {
 		if (doc.exists) {
-			$rootScope.$apply(()=>{ $rootScope.activeSession.preferences = doc.data().preferences });
+			let now = new Date();
+			let userPreferences = doc.data().preferences;
+			
+			if( userPreferences.uiMode == "light" || ( userPreferences.uiMode == "auto" && now.getHours() >= 7 && now.getHours() <= 17 ) ){
+				/** On Auto mode, light UI is from 7am to 5pm */
+				userPreferences.darkMode = false;
+			}else{
+				userPreferences.darkMode = true;
+			}
+			$rootScope.$apply(()=>{ $rootScope.activeSession.preferences = userPreferences });
 		} else {
 			// doc.data() will be undefined in this case
 			console.error("No User Preferences. Using default ones.");

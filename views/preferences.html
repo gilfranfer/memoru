@@ -18,17 +18,21 @@
     <!-- Night mode -->
     <div class="row">
       <div class="col col-lg-4">
-        <label for="darkModeYesNo">{{i18n.pref.darkModeTitle}}</label><br>
-        <small class="text-muted">{{i18n.pref.darkModeDesc}}</small>
+        <label for="">{{i18n.pref.uiModeTitle}}</label><br>
+        <small class="text-muted">{{i18n.pref.uiModeDesc}}</small>
       </div>
       <div class="col col-lg-8">
         <div class="form-check form-check-inline">
-          <input class="" type="radio" name="showdarkMode" id="darkModeYes" ng-value="true" ng-model="activeSession.preferences.darkMode">
-          <label class="" for="darkModeYes">{{i18n.btns.yes}}</label>
+          <input class="" type="radio" name="uiMode" id="uiModeAuto" value="auto" ng-model="activeSession.preferences.uiMode">
+          <label class="" for="uiModeAuto">{{i18n.pref.uiModeAuto}}</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="" type="radio" name="showdarkMode" id="darkModeNo" ng-value="false" ng-model="activeSession.preferences.darkMode">
-          <label class="" for="darkModeNo">{{i18n.btns.no}}</label>
+          <input class="" type="radio" name="uiMode" id="uiModeDark" value="dark" ng-model="activeSession.preferences.uiMode">
+          <label class="" for="uiModeDark">{{i18n.pref.uiModeDark}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="" type="radio" name="uiMode" id="uiModeLight" value="light" ng-model="activeSession.preferences.uiMode">
+          <label class="" for="uiModeLight">{{i18n.pref.uiModeLight}}</label>
         </div>
       </div>
     </div>
