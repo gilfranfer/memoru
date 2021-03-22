@@ -13,10 +13,10 @@ memoruAngular.config(function($routeProvider, $locationProvider) {
 	//   templateUrl: 'views/register.html',
 	//   controller: 'SignUpCtrl'
 	// })
-	// .when('/login', {
-	//   templateUrl: 'views/login.html',
-	//   controller: 'SignUpCtrl'
-	// })
+	.when('/login', {
+	  templateUrl: 'views/auth/login.html'
+	//   ,controller: 'SignUpCtrl'
+	})
 	.when('/taskboard', {
 	  templateUrl: 'views/tasks/tasks-board.html'
 	//   controller: 'UserProfileCtrl',

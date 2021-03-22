@@ -43,6 +43,11 @@ const languages = {
             uiModeTitle:"Interface style", uiModeDesc:"",
             uiModeDark:"Dark style", uiModeLight:"Light Mode", uiModeAuto:"Auto"
         },
+        auth:{
+            loginTitle: "Login", emailLbl:"Type your Email", emailHint:"email@domain.com", invalidEmail:"Invalid email",
+            pwdLbl:"Password", pwdHint:"Make sure no one is watching", forgotPwd: "I forgot my password", pwdRequired:"Type your password",
+            loginBtn:"Login"
+        },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
         }
