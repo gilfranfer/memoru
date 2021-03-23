@@ -25,6 +25,7 @@ const memoruConstants = {
 
 const defaultPreferences = {
     // preferences: { 
+        uiMode: "auto",
         lists:{ initialActivelistId: "default" },
         tasks:{ sorting:{field:"createdOn", desc:"Creation"}, showDuedate: true },
         goals:{ showBar: true, showProgress:true, progressOn:"desc"/*"perc"*/   }
