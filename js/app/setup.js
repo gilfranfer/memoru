@@ -9,10 +9,10 @@ memoruAngular.config(function($routeProvider, $locationProvider) {
 	.when('/about', {
 	  templateUrl: 'views/about.html'
 	})
-	// .when('/register', {
-	//   templateUrl: 'views/register.html',
+	.when('/register', {
+	  templateUrl: 'views/auth/register.html'
 	//   controller: 'SignUpCtrl'
-	// })
+	})
 	.when('/login', {
 	  templateUrl: 'views/auth/login.html'
 	//   ,controller: 'SignUpCtrl'

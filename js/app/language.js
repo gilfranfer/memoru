@@ -45,8 +45,10 @@ const languages = {
         },
         auth:{
             loginTitle: "Login", emailLbl:"Type your Email", emailHint:"email@domain.com", invalidEmail:"Invalid email",
-            pwdLbl:"Password", pwdHint:"Make sure no one is watching", forgotPwd: "I forgot my password", pwdRequired:"Type your password",
-            loginBtn:"Login"
+            pwdLbl:"Password", pwdConfirmLbl:"Confirm Password", pwdHint:"Make sure no one is watching", 
+            forgotPwd: "I forgot my password", pwdRequired:"Type your password", pwdMatch:"Passwords must match",
+            registerBtn:"Register",loginBtn:"Login", pwdSize:"At least 8 characters",
+            regiserTitle:"Register"
         },
         alerts:{
             listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."

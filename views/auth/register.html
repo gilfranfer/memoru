@@ -1,0 +1,65 @@
+<section id="register-section row">
+  <div class="col col-md-8 offset-md-2">
+    <article id="title" class="row mt-4">
+			<div class="col">
+				<p class="d-md-none h2 text-center">{{i18n.auth.regiserTitle}}</p>
+				<p class="d-none d-md-block display-4 text-center">{{i18n.auth.regiserTitle}}</p>
+			</div>
+		</article>
+
+    <form class="mt-3" name="registerForm" novalidate ng-submit="register()">
+			<div class="form-row mt-4">
+				<div class="col">
+          <label for="email">{{i18n.auth.emailLbl}}</label>
+          <input id="email" type="email" name="email" autocomplete="username" class="form-control form-control-lg" 
+              placeholder="{{i18n.auth.emailHint}}" ng-model="newUser.email" ng-required="true"/>
+              <div class="text-danger" role="alert" ng-show="registerForm.email.$invalid && registerForm.email.$dirty">
+                {{i18n.auth.invalidEmail}}
+              </div>
+			  </div>
+			</div>
+      <div class="form-row mt-4">
+				<div class="col col-md-6">
+					<label for="pwd">{{i18n.auth.pwdLbl}}</label>
+          <input id="pwd" type="password" name="password" autocomplete="new-password" class="form-control form-control-lg" 
+                placeholder="{{i18n.auth.pwdHint}}" ng-model="newUser.pwd" ng-required="true" ng-minlength="8" />
+          <small id="pwdHelp" class="form-text text-muted">{{i18n.auth.pwdSize}}</small>
+
+					<div class="text-danger" role="alert"
+            ng-show="registerForm.password.$invalid && registerForm.password.$dirty">
+          	{{i18n.auth.pwdRequired}}
+					</div>
+				</div>
+				<div class="col col-md-6">
+					<label for="cpwd">{{i18n.auth.pwdConfirmLbl}}</label>
+          <input id="cpwd" type="password" name="cpassword" autocomplete="new-password" class="form-control form-control-lg" 
+                placeholder="{{i18n.auth.pwdHint}}" ng-model="newUser.pwdconf" ng-required="true" ng-pattern="newUser.pwd" />
+          <div class="text-danger" role="alert"
+            ng-show="registerForm.passwordConfirm.$invalid && registerForm.passwordConfirm.$dirty">
+            {{i18n.auth.pwdMatch}}
+          </div>
+				</div>
+			</div>
+
+      <!-- Alerts -->
+      <div class="alert alert-warning" role="alert" ng-show="response.working || response.loading">
+        {{response.message}}
+      </div>
+      <div class="alert alert-success" role="alert" ng-show="response.success">
+        {{response.message}}
+      </div>
+      <div class="alert alert-danger" role="alert" ng-show="response.error">
+        {{response.message}}
+      </div>
+
+      <!-- Buttons row -->
+      <div class="form-row mt-4">
+        <div class="col">
+          <button type="submit" class="btn btn-lg btn-block btn-primary clickable" role="button"
+            ng-disabled="registerForm.$invalid">
+            {{i18n.auth.registerBtn}}
+          </button>
+        </div>
+      </div>
+    </form>
+</section>
