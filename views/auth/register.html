@@ -7,48 +7,64 @@
 			</div>
 		</article>
 
-    <form class="mt-3" name="registerForm" novalidate ng-submit="register()">
+    <form class="mt-3" name="registerForm" novalidate ng-submit="registerUser()">
+			<div class="form-row mt-4">
+				<div class="col">
+          <label for="name">{{i18n.auth.nameLbl}}</label>
+          <input id="name" type="text" name="name" autocomplete="name" class="form-control form-control-lg" 
+              placeholder="{{i18n.auth.nameHint}}" ng-model="registration.name" ng-required="true" ng-pattern="nameRegex"/>
+          <small id="" class="form-text text-muted">{{i18n.auth.nameRule}}</small>
+          <div class="text-danger" role="alert" ng-show="registerForm.name.$invalid && registerForm.name.$dirty">
+            {{i18n.auth.invalidName}}
+          </div>
+			  </div>
+			</div>
 			<div class="form-row mt-4">
 				<div class="col">
           <label for="email">{{i18n.auth.emailLbl}}</label>
-          <input id="email" type="email" name="email" autocomplete="username" class="form-control form-control-lg" 
-              placeholder="{{i18n.auth.emailHint}}" ng-model="newUser.email" ng-required="true"/>
+          <input id="email" type="email" name="email" autocomplete="email" class="form-control form-control-lg" 
+              placeholder="{{i18n.auth.emailHint}}" ng-model="registration.email" ng-required="true"/>
               <div class="text-danger" role="alert" ng-show="registerForm.email.$invalid && registerForm.email.$dirty">
                 {{i18n.auth.invalidEmail}}
               </div>
 			  </div>
 			</div>
-      <div class="form-row mt-4">
-				<div class="col col-md-6">
+      <div class="form-row">
+				<div class="col-12 col-md-6 mt-4">
 					<label for="pwd">{{i18n.auth.pwdLbl}}</label>
           <input id="pwd" type="password" name="password" autocomplete="new-password" class="form-control form-control-lg" 
-                placeholder="{{i18n.auth.pwdHint}}" ng-model="newUser.pwd" ng-required="true" ng-minlength="8" />
-          <small id="pwdHelp" class="form-text text-muted">{{i18n.auth.pwdSize}}</small>
-
+                placeholder="{{i18n.auth.pwdHint}}" ng-model="registration.pwd" ng-required="true" ng-pattern="pwdRegex"/>
 					<div class="text-danger" role="alert"
             ng-show="registerForm.password.$invalid && registerForm.password.$dirty">
-          	{{i18n.auth.pwdRequired}}
+          	{{i18n.auth.invalidPwd}}
 					</div>
 				</div>
-				<div class="col col-md-6">
+				<div class="col-12 col-md-6 mt-4">
 					<label for="cpwd">{{i18n.auth.pwdConfirmLbl}}</label>
           <input id="cpwd" type="password" name="cpassword" autocomplete="new-password" class="form-control form-control-lg" 
-                placeholder="{{i18n.auth.pwdHint}}" ng-model="newUser.pwdconf" ng-required="true" ng-pattern="newUser.pwd" />
+                placeholder="{{i18n.auth.pwdHint}}" ng-model="registration.pwdconf" ng-required="true" ng-pattern="registration.pwd" />
           <div class="text-danger" role="alert"
-            ng-show="registerForm.passwordConfirm.$invalid && registerForm.passwordConfirm.$dirty">
+            ng-show="registerForm.cpassword.$invalid && registerForm.cpassword.$dirty">
             {{i18n.auth.pwdMatch}}
           </div>
 				</div>
 			</div>
+      <div class="form-row">
+        <div class="col">
+          <small id="pwdHelp" class="form-text text-muted">{{i18n.auth.pwdRule}}</small>
+        </div>
+      </div>
+
+      <div class="form-row form-check mt-4">
+        <div class="col">
+          <input id="privacyCheck" class="" type="checkbox" ng-model="registration.isAgree" ng-required="true">
+          <label class="form-check-label" for="privacyCheck"> {{i18n.auth.readPolicy}} </label>
+          <span class="clickable text-primary"  data-toggle="modal" data-target="#privacyModal"> {{i18n.auth.privacyPolicy}} </span>
+        </div>
+      </div>
 
       <!-- Alerts -->
-      <div class="alert alert-warning" role="alert" ng-show="response.working || response.loading">
-        {{response.message}}
-      </div>
-      <div class="alert alert-success" role="alert" ng-show="response.success">
-        {{response.message}}
-      </div>
-      <div class="alert alert-danger" role="alert" ng-show="response.error">
+      <div class="alert alert-{{response.type}}" role="alert" ng-show="response.message">
         {{response.message}}
       </div>
 
@@ -63,3 +79,6 @@
       </div>
     </form>
 </section>
+
+<!-- Privcy Policy Modal -->
+<article ng-include="'views/auth/privacyPolicy.html'"></article>

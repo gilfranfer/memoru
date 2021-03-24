@@ -2,8 +2,8 @@
   <!-- Create and Search Lists -->
   <article id="search-create" class="bg-light row p-4 mb-4" ng-class="{'dark-container':activeSession.preferences.darkMode}">
     <div class="col">
-      <p class="d-lg-none h4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
-      <p class="d-none d-lg-block display-4 text-center">{{activeSession.username}} {{i18n.tasks.title}}</p>
+      <p class="d-lg-none h4 text-center">{{activeSession.name}} {{i18n.tasks.title}}</p>
+      <p class="d-none d-lg-block display-4 text-center">{{activeSession.name}} {{i18n.tasks.title}}</p>
       <hr class="my-4">
       <form class="" name="addtaskForm" novalidate ng-submit="addTask()">
         <div class="form-row">

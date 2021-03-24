@@ -6,13 +6,12 @@
 				<p class="d-none d-md-block display-4 text-center">{{i18n.auth.loginTitle}}</p>
 			</div>
 		</article>
-
 		<form class="mt3" name="loginForm" novalidate ng-submit="login()">
 			<div class="form-row mt-4">
 				<div class="col">
 					<label for="loginemail">{{i18n.auth.emailLbl}}</label>
 					<input id="loginemail" type="email" name="email" autocomplete="username" class="form-control form-control-lg" 
-						placeholder="{{i18n.auth.emailHint}}" ng-model="user.email" ng-required="true"/>
+						placeholder="{{i18n.auth.emailHint}}" ng-model="loginUser.email" ng-required="true"/>
 					<div class="text-danger" role="alert" ng-show="loginForm.email.$invalid && loginForm.email.$dirty">
 						{{i18n.auth.invalidEmail}}
 					</div>
@@ -22,7 +21,7 @@
 				<div class="col">
 					<label for="loginpwd">{{i18n.auth.pwdLbl}}</label>
 					<input type="password" name="password" id="loginpwd" placeholder="{{i18n.auth.pwdHint}}"
-						class="form-control form-control-lg" ng-model="user.pwd" ng-required="true"
+						class="form-control form-control-lg" ng-model="loginUser.pwd" ng-required="true"
 						autocomplete="current-password">
 					<div class="text-danger" role="alert"
 						ng-show="loginForm.password.$invalid && loginForm.password.$dirty">
@@ -32,11 +31,11 @@
 			</div>
 			<div class="row text-right mt-2">
 				<div class="col">
-					<a href="#!/pwdreset">{{i18n.auth.forgotPwd}}</a>
+					<span class="btn-link clickable" ng-click="sendPasswordResetEmail()">{{i18n.auth.forgotPwd}}</span>
 				</div>
 			</div>
 
-			<div class="alert alert-warning" role="alert" ng-show="response.working">
+			<div class="alert alert-success" role="alert" ng-show="response.success">
 				{{response.message}}
 			</div>
 			<div class="alert alert-danger" role="alert" ng-show="response.error">
