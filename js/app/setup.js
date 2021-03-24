@@ -118,7 +118,7 @@ memoruAngular.run(function($rootScope) {
 	$rootScope.appConstants = memoruConstants.front;
     $rootScope.i18n = languages.english;
 	$rootScope.activeSession = {  
-		preferences: defaultPreferences
+		preferences: {uiMode:"auto"}
 	};
 
 	//For auto UI Mode when no one is logged id

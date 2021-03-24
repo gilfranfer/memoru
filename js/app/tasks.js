@@ -7,8 +7,8 @@
     - Load Open tasks for the Active List
 */
 memoruAngular.controller('TaskCtrl',
-	['$rootScope','$scope','$routeParams','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
-    function($rootScope,$scope,$routeParams,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
+	['$rootScope','$scope','$routeParams','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc','UserSvc',
+    function($rootScope,$scope,$routeParams,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc,UserSvc){
         
         let newTaskStatus = 'open';
         $scope.taskType = 'task';
@@ -264,6 +264,14 @@ memoruAngular.controller('TaskCtrl',
             TasksSvc.deleteTaskComment($rootScope.activeSession.userID, $scope.taskEdit.id, comment.id);
         };
 
+        $scope.pepareForTaskboard = function(sort,list){
+            // let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
+            loadVisibleUserLists(list);
+            $scope.activeTaskSort = sort;
+            $scope.reverseSort = true;
+            $scope.loadTasksWithStatus("open",list);
+        };
+
         /** TASKBOARD INITIAL LOAD */
         firebase.auth().onAuthStateChanged((user) => {
             if(user){
@@ -290,11 +298,16 @@ memoruAngular.controller('TaskCtrl',
                         console.error("Error getting document:", error);
                     });
                 }else{
-                    $scope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
-                    $scope.reverseSort = true;
-                    let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
-                    loadVisibleUserLists(preferredActiveListId);
-                    $scope.loadTasksWithStatus("open",preferredActiveListId);
+                    if(!$rootScope.activeSession.preferences.tasks){
+                        /* When preferences are not yet loaded from Auth onAuthStateChanged 
+                        for example on page reload */
+                        UserSvc.getUserDoc(user.uid).get().then( (doc) => {
+                            $scope.pepareForTaskboard( doc.data().preferences.tasks.sorting, doc.data().preferences.lists.initialActivelistId);
+                        });
+                    }else{
+                        /** Normal load after login, registration or moving form another page */
+                        $scope.pepareForTaskboard( $rootScope.activeSession.preferences.tasks.sorting, $rootScope.activeSession.preferences.lists.initialActivelistId);
+                    }
                 }
             }else{
                 $rootScope.activeList = null;
