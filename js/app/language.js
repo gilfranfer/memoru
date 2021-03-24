@@ -26,7 +26,7 @@ const languages = {
             goalCurrent:"Goal Current", goalEnd:"Goal End", goalUpdate:"Decrease / Increase by",
             created:"A new task has been created!", createdOn:"Created on:",
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
-            updated:"Task Updated!", 
+            updated:"Task Updated!", goalError:"Goal current value must be lower than Goal End",
             taskInArchive:"This Task is currently Archived", taskCompleted: "This task was Completed!",
             notANumber: "Value is not a number", decrementSurpass:"Decrement would fall below zero.", incrementSurpass:"Increment would surpass the Goal.",
             commentsTitle:"Task Comments", noComments: "This task does not have comments, yet.", commentHint:"Add some comments or notes to your task."
@@ -40,30 +40,25 @@ const languages = {
             progressValTitle:"Show Progress value", progressValDesc: "Display the progress value on top of the bar",
             progressTypeTitle:"Progress value as", progressTypeDesc: "Display the progress value as Percentage or Detail", 
             typePerc: "Percentage %", typeDesc: "Detail x/y", saved:"Preferences Saved!",
-            darkModeTitle:"Dark mode", darkModeDesc:""
+            uiModeTitle:"Interface style", uiModeDesc:"",
+            uiModeDark:"Dark style", uiModeLight:"Light Mode", uiModeAuto:"Auto"
+        },
+        auth:{
+            loginTitle: "Login", emailLbl:"Type your Email", emailHint:"email@domain.com", invalidEmail:"Invalid email",
+            pwdLbl:"Password", pwdConfirmLbl:"Confirm Password", pwdHint:"Shhh...", 
+            forgotPwd: "Reset password", invalidPwd:"Invalid Password", pwdMatch:"Passwords must match",
+            registerBtn:"Register", loginBtn:"Login", pwdRule:"Include 8+ combination of numbers, lower and upper case letters",
+            regiserTitle:"Register", readPolicy: "I have read, and agree with the", privacyPolicy: "Privacy Policy",
+            regWip:"Creating Account...", regDone:"Account Created!", confWip:"Configuring Account...",
+            nameLbl:"Name", nameHint:"FernandoGil", nameRule:"Only letters", invalidName:"Invalid Name",
+            verificationEmailSent:"Email sent, please check your mailbox", sendVerificationEmail:"Send Verification Email",
+            emailNotVerified:"Your email has not been verified.", resetPwdEmail:"Email sent to reset password", loginError:"Invalid email/password"
         },
         alerts:{
-            listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list."
+            listDelete:"When deleting a list, all Open Tasks will be moved to 'Default' list.",
         }
     },
     spanish: {
-        menu:{login:"Iniciar sesión", logout: "Cerrar sesión", register:"Registro"},
-        labels:{tasks:"Tareas"},
-        lists:{addTitle:"Administra tus Listas", addHint:"Escribe algo ...", addBtnTooltip:"Agregar como Lista",
-                addDesc:"Escribe para encontrar una lista o crear una nueva", alreadyExist:"Ya existe una lista con ese nombre.",
-                created:"Una nueva lista fue creada!", createdOn:"List created on: ", 
-                updated:"Lista Actualizada!", deleted:"La lista ha sido eliminada.",
-                tasksInList:"Tareas existen en esta lista.", editBtnTooltip:"Update List"
-        },
-        tasks:{ 
-            title:", tus Tareas son", addHint:"Escribe tu Tarea ...", addBtnTooltip:"Crear Tarea",
-            addDesc:"Escribe para encontrar una Tarea o crear una nueva",
-            openTasks: "Tareas Pendientes", closedTasks: "Tareas Completadas",
-            created:"Una nueva Tarea fue creada!"
-        },
-        tasks:{ title:"", addHint:"Escribe algo ...", created:"Una nueva tarea fue creada!"},
-        alerts:{
-            listDelete:"Al eliminar una lista, todas sus Tareas Abiertas serán movidas a la lista 'Default'."
-        }
+
     }
 };

@@ -1,62 +1,33 @@
-var defaultLists = [
-    {
-        id:'archive',
-        locked: true, visible:true,
-        name:"Archive",
-        desc:"System Archive"
-    },
-    {
-        id:'all',
-        locked: true, visible:true,
-        name:"All",
-        desc:"Show all tasks"
-    },
-    {
-        id:'default',
-        locked: true, visible:true,
-        name:"Default",
-        desc:"System Default"
-        // counts:{ total:0 }
-    }
-];
-
 /* This controller is used to Manage User's list */
 memoruAngular.controller('ListsCtrl',
-	['$rootScope','$scope','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc','PreferencesSvc',
-    function($rootScope,$scope,$firebaseAuth,ListsSvc,TasksSvc,AlertsSvc,PreferencesSvc){
+	['$rootScope','$scope','ListsSvc','TasksSvc','AlertsSvc','UserSvc',
+    function($rootScope,$scope,ListsSvc,TasksSvc,AlertsSvc,UserSvc){
         
         /* Fetch all Lists from db for the current User and set into $rootScope
             Using "onSnapshot" to listen for real time changes.*/
-        let userId = $rootScope.activeSession.userID;
-        if(!$rootScope.allUserlists){
-            var userlistsRef = ListsSvc.getListsCollectionForUser(userId);
-            userlistsRef.onSnapshot(function(querySnapshot){
-                let lists = [];
-                // if(querySnapshot.metadata.hasPendingWrites){return;}
-                querySnapshot.forEach(function(doc) {
-                    lists.push(doc.data());
-                });
-
-                $scope.$apply(function(){
-                    $rootScope.allUserlists = lists;
-                });
-            });
-            
-        }
-        
-        $scope.createDefaultLists = function(){
-            defaultLists.forEach(function(list){
-                // list.creator = "System";
-                list.createdOn = firebase.firestore.FieldValue.serverTimestamp();
-                ListsSvc.persistListForUser(list,userId);
-            });
-        };
+		firebase.auth().onAuthStateChanged((user) => {
+			if(!user){ $rootScope.allUserlists = null }
+            else if(!$rootScope.allUserlists){
+                console.debug("getListsCollectionForUser");
+                ListsSvc.getListsCollectionForUser(user.uid).onSnapshot(function(querySnapshot){
+                    let lists = [];
+                    // if(querySnapshot.metadata.hasPendingWrites){return;}
+                    querySnapshot.forEach(function(doc) {
+                        lists.push(doc.data());
+                    });
+    
+                    $scope.$apply(function(){
+                        $rootScope.allUserlists = lists;
+                    });
+                });               
+            }
+        });
         
         /** Only System default lists are locked */
         $scope.newlist={locked:false, visible:true, desc:''};
         $scope.addNewList = function(){
             $scope.response = {};
-            let querySnapshot = ListsSvc.getUserListByName(userId,$scope.newlist.name);
+            let querySnapshot = ListsSvc.getUserListByName($rootScope.activeSession.userID,$scope.newlist.name);
             querySnapshot.then(function(data){
                 if(data.size>0){
                     $scope.$apply(function(){
@@ -70,7 +41,7 @@ memoruAngular.controller('ListsCtrl',
                     // $scope.newlist.creator = $rootScope.activeSession.userID;
                     $scope.newlist.createdOn = firebase.firestore.FieldValue.serverTimestamp();
 
-                    ListsSvc.persistListForUser($scope.newlist,userId).then(function(){
+                    ListsSvc.persistListForUser($scope.newlist,$rootScope.activeSession.userID).then(function(){
                         $scope.newlist={locked:false, visible:true,desc:''};
                         $scope.$apply(function(){
                             $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
@@ -87,12 +58,12 @@ memoruAngular.controller('ListsCtrl',
         $scope.deleteList = function(listId){
             $scope.response = {};
             
-            ListsSvc.deleteListById(listId,userId).then(function() {
+            ListsSvc.deleteListById(listId,$rootScope.activeSession.userID).then(function() {
                 if(listId == $rootScope.activeSession.preferences.lists.initialActivelistId){
                     resetDefaultActiveList();
                 }
                 //Move tasks in this list to 'default' list
-                TasksSvc.moveTasktoList(userId,listId,'default');
+                TasksSvc.moveTasktoList($rootScope.activeSession.userID,listId,'default');
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                         message: $rootScope.i18n.lists.deleted };
@@ -107,7 +78,7 @@ memoruAngular.controller('ListsCtrl',
          * so we must check first if another list already exists with the same name. */
         $scope.editList = function(list){
             $scope.response = {};
-            ListsSvc.getUserListByNameAndId(userId, list.name, list.id).then(function(data){
+            ListsSvc.getUserListByNameAndId($rootScope.activeSession.userID, list.name, list.id).then(function(data){
                 if(data.size>0){
                     $scope.$apply(function(){
                         $scope.response = {failed:true, title: AlertsSvc.getRandomErrorTitle(), 
@@ -116,7 +87,7 @@ memoruAngular.controller('ListsCtrl',
                 }
                 //Update list only if another one does not already exist with the same name
                 else{
-                    ListsSvc.updateListForUser(list,userId).then(function(){
+                    ListsSvc.updateListForUser(list,$rootScope.activeSession.userID).then(function(){
                         $scope.$apply(function(){
                             $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                                 message: $rootScope.i18n.lists.updated };
@@ -133,10 +104,10 @@ memoruAngular.controller('ListsCtrl',
         $scope.makeListVisible = function(list,visible){
             $scope.response = {};
             list.visible = visible;
-            ListsSvc.updateListVisibility(list,userId).then(function(){
+            ListsSvc.updateListVisibility(list,$rootScope.activeSession.userID).then(function(){
                 /* Task visibility changes according to the list visibility. 
                     This is useful when we want to display 'all' tasks, but not showing the ones for list visible=false */
-                TasksSvc.changeTaskVisibility(userId,list.id,visible);
+                TasksSvc.changeTaskVisibility($rootScope.activeSession.userID,list.id,visible);
                 if(list.id == $rootScope.activeSession.preferences.lists.initialActivelistId){
                     resetDefaultActiveList();
                 }
@@ -150,7 +121,7 @@ memoruAngular.controller('ListsCtrl',
         /** When a list is deleted or its visibility is updated, we need to update the user's initial active list preference to the 'default' list */
         var resetDefaultActiveList = function(){
             $rootScope.activeSession.preferences.lists.initialActivelistId = 'default';
-            PreferencesSvc.updatePreferences( $rootScope.activeSession.userID, $rootScope.activeSession.preferences);
+            UserSvc.updateUserPreferences( $rootScope.activeSession.userID, $rootScope.activeSession.preferences);
         };
 
     }]

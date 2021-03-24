@@ -7,10 +7,9 @@
     - Load Open tasks for the Active List
 */
 memoruAngular.controller('TaskCtrl',
-	['$rootScope','$scope','$routeParams','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc',
-    function($rootScope,$scope,$routeParams,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc){
+	['$rootScope','$scope','$routeParams','$firebaseAuth','ListsSvc','TasksSvc','AlertsSvc','UserSvc',
+    function($rootScope,$scope,$routeParams,$firebaseAuth,ListsSvc,TasksSvc, AlertsSvc,UserSvc){
         
-        let userId = $rootScope.activeSession.userID;
         let newTaskStatus = 'open';
         $scope.taskType = 'task';
         $scope.goalValues = { current:0};
@@ -27,7 +26,7 @@ memoruAngular.controller('TaskCtrl',
                 fromListId = $rootScope.activeList.id;
             }
 
-            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus(userId, fromListId, status);
+            let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, fromListId, status);
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
                 
@@ -42,7 +41,7 @@ memoruAngular.controller('TaskCtrl',
                 });
             });
         };
-
+        
         $scope.addTask = function(){
             $scope.response = {};
             
@@ -68,11 +67,16 @@ memoruAngular.controller('TaskCtrl',
                     return;
                 }
                 newTask.goal.current = ( Number.isInteger(newTask.goal.current)? newTask.goal.current: Number(newTask.goal.current.toFixed(2)) ); 
-                newTask.goal.end = ( Number.isInteger(newTask.goal.end)? newTask.goal.end: Number(newTask.goal.end.toFixed(2)) );     
+                newTask.goal.end = ( Number.isInteger(newTask.goal.end)? newTask.goal.end: Number(newTask.goal.end.toFixed(2)) );  
+                
+                if(newTask.goal.current>newTask.goal.end){
+                    $scope.response = {failed:true, message: $rootScope.i18n.tasks.goalError };
+                    return;
+                }
             }
 
-            TasksSvc.persistTaskForUser(newTask, userId).then(function(){
-                TasksSvc.updateOpenTaskCounter(userId,1)
+            TasksSvc.persistTaskForUser(newTask, $rootScope.activeSession.userID).then(function(){
+                TasksSvc.updateOpenTaskCounter($rootScope.activeSession.userID,1)
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.created };
                     $scope.goalValues = { current:0};
@@ -83,9 +87,9 @@ memoruAngular.controller('TaskCtrl',
         
         $scope.deleteTask = function(taskObj){
             $scope.response = {};
-            TasksSvc.deleteUserTask(taskObj, userId).then(function(){
+            TasksSvc.deleteUserTask(taskObj, $rootScope.activeSession.userID).then(function(){
                 if(taskObj.status=="open"){
-                    TasksSvc.updateOpenTaskCounter(userId,-1)
+                    TasksSvc.updateOpenTaskCounter($rootScope.activeSession.userID,-1)
                 }
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.deleted };
@@ -120,8 +124,8 @@ memoruAngular.controller('TaskCtrl',
         $scope.updateTaskStatus = function(taskObj,newStatus, openTasksIncrement,message){
             $scope.response = {};
             
-            TasksSvc.updateTask(userId, taskObj.id, {status: newStatus} ).then(function(){
-                TasksSvc.updateOpenTaskCounter(userId, openTasksIncrement)
+            TasksSvc.updateTask($rootScope.activeSession.userID, taskObj.id, {status: newStatus} ).then(function(){
+                TasksSvc.updateOpenTaskCounter($rootScope.activeSession.userID, openTasksIncrement)
                 $scope.$apply(function(){
                     taskObj.status = newStatus;
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: message };
@@ -152,7 +156,7 @@ memoruAngular.controller('TaskCtrl',
             }
             taskObj.goalUpdate = null;
             
-            TasksSvc.updateTask(userId, taskObj.id, updatedValues).then(function(){
+            TasksSvc.updateTask($rootScope.activeSession.userID, taskObj.id, updatedValues).then(function(){
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.updated };
                 });
@@ -171,7 +175,7 @@ memoruAngular.controller('TaskCtrl',
                 taskObj.duedate = null; 
             }
             
-            TasksSvc.updateTask(userId, taskObj.id, taskObj).then(function(){
+            TasksSvc.updateTask($rootScope.activeSession.userID, taskObj.id, taskObj).then(function(){
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.updated };
                 });
@@ -191,7 +195,7 @@ memoruAngular.controller('TaskCtrl',
                 return;
             }
             $rootScope.forceRefresh = true;
-            TasksSvc.updateGoalCurrent(userId, task).then(function(){
+            TasksSvc.updateGoalCurrent($rootScope.activeSession.userID, task).then(function(){
                 $rootScope.forceRefresh = null;
             });
         };
@@ -210,7 +214,7 @@ memoruAngular.controller('TaskCtrl',
             }
             $rootScope.forceRefresh = true;
             task.goalUpdate= task.goalUpdate *-1;
-            TasksSvc.updateGoalCurrent(userId, task).then(function(){
+            TasksSvc.updateGoalCurrent($rootScope.activeSession.userID, task).then(function(){
                 $rootScope.forceRefresh = null;
             });
         };
@@ -220,7 +224,7 @@ memoruAngular.controller('TaskCtrl',
         let loadVisibleUserLists = function (activeListId){
             let activeListObj = undefined;
                     
-            ListsSvc.getVisibleListsForUser(userId).onSnapshot(function(querySnapshot){
+            ListsSvc.getVisibleListsForUser($rootScope.activeSession.userID).onSnapshot(function(querySnapshot){
                 let lists = [];
                 querySnapshot.forEach(function(listDoc) {
                     lists.push(listDoc.data());
@@ -235,9 +239,9 @@ memoruAngular.controller('TaskCtrl',
                 });
             });
         };
-        
+
         let loadTaskComments = function (taskId){
-            let commentsRef = TasksSvc.getTaskComments(userId,taskId);
+            let commentsRef = TasksSvc.getTaskComments($rootScope.activeSession.userID,taskId);
             commentsRef.onSnapshot( (querySnapshot) => {
                 let comments = [];
                 querySnapshot.forEach(function(doc) {
@@ -253,45 +257,66 @@ memoruAngular.controller('TaskCtrl',
         };
 
         $scope.addComment = function(){
-            TasksSvc.persistTaskComment(userId, $scope.taskEdit.id, $scope.newTaskComment);
+            TasksSvc.persistTaskComment($rootScope.activeSession.userID, $scope.taskEdit.id, $scope.newTaskComment);
         };
         
         $scope.deleteComment = function(comment){
-            TasksSvc.deleteTaskComment(userId, $scope.taskEdit.id, comment.id);
+            TasksSvc.deleteTaskComment($rootScope.activeSession.userID, $scope.taskEdit.id, comment.id);
+        };
+
+        $scope.pepareForTaskboard = function(sort,list){
+            // let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
+            loadVisibleUserLists(list);
+            $scope.activeTaskSort = sort;
+            $scope.reverseSort = true;
+            $scope.loadTasksWithStatus("open",list);
         };
 
         /** TASKBOARD INITIAL LOAD */
-            let taskID = $routeParams.taskId;
-            $scope.todayTime = new Date().getTime();
-            
-            if(taskID){
-                /* Going to Task Edit */
-                let taskReference = TasksSvc.getUserTaskByID($rootScope.activeSession.userID, taskID);
-                taskReference.then( (doc) => {
-                    if (doc.exists) {
-                        $scope.taskEdit = doc.data();
-                        if(doc.data().duedate){
-                            $scope.tempDuedate = doc.data().duedate.toDate();
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user){
+                let taskID = $routeParams.taskId;
+                $scope.todayTime = new Date().getTime();
+				$rootScope.activeSession.userID = user.uid;
+
+                if(taskID){
+                    /* Going to Task Edit */
+                    let taskReference = TasksSvc.getUserTaskByID($rootScope.activeSession.userID, taskID);
+                    taskReference.then( (doc) => {
+                        if (doc.exists) {
+                            $scope.taskEdit = doc.data();
+                            if(doc.data().duedate){
+                                $scope.tempDuedate = doc.data().duedate.toDate();
+                            }
+                            loadVisibleUserLists($scope.taskEdit.list);
+                            loadTaskComments($scope.taskEdit.id);
+                        } else {
+                            // doc.data() will be undefined in this case
+                            console.error("Task doesn't exist!");
                         }
-                        loadVisibleUserLists($scope.taskEdit.list);
-                        loadTaskComments($scope.taskEdit.id);
-                    } else {
-                        // doc.data() will be undefined in this case
-                        console.error("Task doesn't exist!");
+                    }).catch((error) => {
+                        console.error("Error getting document:", error);
+                    });
+                }else{
+                    if(!$rootScope.activeSession.preferences.tasks){
+                        /* When preferences are not yet loaded from Auth onAuthStateChanged 
+                        for example on page reload */
+                        UserSvc.getUserDoc(user.uid).get().then( (doc) => {
+                            $scope.pepareForTaskboard( doc.data().preferences.tasks.sorting, doc.data().preferences.lists.initialActivelistId);
+                        });
+                    }else{
+                        /** Normal load after login, registration or moving form another page */
+                        $scope.pepareForTaskboard( $rootScope.activeSession.preferences.tasks.sorting, $rootScope.activeSession.preferences.lists.initialActivelistId);
                     }
-                }).catch((error) => {
-                    console.error("Error getting document:", error);
-                });
+                }
             }else{
-                $scope.activeTaskSort = $rootScope.activeSession.preferences.tasks.sorting;
-                $scope.reverseSort = true;
-                let preferredActiveListId = $rootScope.activeSession.preferences.lists.initialActivelistId;
-                loadVisibleUserLists(preferredActiveListId);
-                $scope.loadTasksWithStatus("open",preferredActiveListId);
+                $rootScope.activeList = null;
+                $rootScope.tasksList = null;
+                $rootScope.visibleUserlists = null;
             }
+	});
         
-    }]
-);
+}]);
 
 memoruAngular.factory('TasksSvc',
     ['$rootScope',
@@ -313,6 +338,9 @@ memoruAngular.factory('TasksSvc',
             },
             updateTask: function(userId, taskId, updatedValues){
                 return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).doc(taskId).update( updatedValues );
+            },
+            setOpenTaskCounter: function(userId){
+                return memoruStore.collection(userTasks).doc(userId).set({open:0});
             },
             updateOpenTaskCounter: function(userId, increment){
                 return memoruStore.collection(userTasks).doc(userId).update({
