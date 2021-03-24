@@ -61,6 +61,15 @@ function($rootScope,$scope,$location,UserSvc,ListsSvc,TasksSvc){
 
     $scope.pwdRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
     $scope.nameRegex = new RegExp("^[A-Za-z]+$");
+    $scope.registration = {
+        email:"", name:"",
+        pwd:"", pwdconf:"",
+        isAgree: false
+    }
+    $scope.loginUser = {
+        email:"",
+        pwd:""
+    }
 
     /** Create an Account for the user, and set the initial Lists, Preferences and Open tasks counter*/
     $scope.registerUser = function(){

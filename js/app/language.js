@@ -45,7 +45,7 @@ const languages = {
         },
         auth:{
             loginTitle: "Login", emailLbl:"Type your Email", emailHint:"email@domain.com", invalidEmail:"Invalid email",
-            pwdLbl:"Password", pwdConfirmLbl:"Confirm Password", pwdHint:"Make sure no one is watching", 
+            pwdLbl:"Password", pwdConfirmLbl:"Confirm Password", pwdHint:"Shhh...", 
             forgotPwd: "Reset password", invalidPwd:"Invalid Password", pwdMatch:"Passwords must match",
             registerBtn:"Register", loginBtn:"Login", pwdRule:"Include 8+ combination of numbers, lower and upper case letters",
             regiserTitle:"Register", readPolicy: "I have read, and agree with the", privacyPolicy: "Privacy Policy",
