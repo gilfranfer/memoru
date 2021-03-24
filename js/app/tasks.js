@@ -67,7 +67,12 @@ memoruAngular.controller('TaskCtrl',
                     return;
                 }
                 newTask.goal.current = ( Number.isInteger(newTask.goal.current)? newTask.goal.current: Number(newTask.goal.current.toFixed(2)) ); 
-                newTask.goal.end = ( Number.isInteger(newTask.goal.end)? newTask.goal.end: Number(newTask.goal.end.toFixed(2)) );     
+                newTask.goal.end = ( Number.isInteger(newTask.goal.end)? newTask.goal.end: Number(newTask.goal.end.toFixed(2)) );  
+                
+                if(newTask.goal.current>newTask.goal.end){
+                    $scope.response = {failed:true, message: $rootScope.i18n.tasks.goalError };
+                    return;
+                }
             }
 
             TasksSvc.persistTaskForUser(newTask, $rootScope.activeSession.userID).then(function(){

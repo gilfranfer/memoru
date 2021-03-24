@@ -26,7 +26,7 @@ const languages = {
             goalCurrent:"Goal Current", goalEnd:"Goal End", goalUpdate:"Decrease / Increase by",
             created:"A new task has been created!", createdOn:"Created on:",
             deleted:"The task was deleted!", closed:"You completed a Task!", reopened: "Your task is pending, again.",
-            updated:"Task Updated!", 
+            updated:"Task Updated!", goalError:"Goal current value must be lower than Goal End",
             taskInArchive:"This Task is currently Archived", taskCompleted: "This task was Completed!",
             notANumber: "Value is not a number", decrementSurpass:"Decrement would fall below zero.", incrementSurpass:"Increment would surpass the Goal.",
             commentsTitle:"Task Comments", noComments: "This task does not have comments, yet.", commentHint:"Add some comments or notes to your task."
