@@ -101,13 +101,27 @@ memoruAngular.controller('ListsCtrl',
 
         };
 
-        $scope.makeListVisible = function(list,visible){
+        $scope.makeListVisible = function(list, isVisible){
             $scope.response = {};
-            list.visible = visible;
-            ListsSvc.updateListVisibility(list,$rootScope.activeSession.userID).then(function(){
+            list.visible = isVisible;
+            let userId = $rootScope.activeSession.userID;
+            let openTasks = 0;
+
+            ListsSvc.updateListVisibility(list,userId).then(function(){
                 /* Task visibility changes according to the list visibility. 
-                    This is useful when we want to display 'all' tasks, but not showing the ones for list visible=false */
-                TasksSvc.changeTaskVisibility($rootScope.activeSession.userID,list.id,visible);
+                    This is useful when we want to display 'all' tasks, but not showing the ones for list visible=false
+                    Additionally, we update the "Open Tasks" counter, because open taks in hidden list should not be counted */
+                TasksSvc.getTasksFromUserList(userId,list.id).then(snapshot => {
+                    if (snapshot.size > 0) {
+                        snapshot.forEach(taskItem => {
+                            if(taskItem.data().status == "open" && isVisible){ openTasks++; } else
+                            if(taskItem.data().status == "open" && !isVisible){ openTasks--; }
+                            TasksSvc.updateTask(userId, taskItem.data().id, { visible: isVisible });
+                        });
+                        TasksSvc.updateOpenTaskCounter($rootScope.activeSession.userID, openTasks);                        
+                    }
+                })
+                // TasksSvc.changeTaskVisibility($rootScope.activeSession.userID,list.id,visible);
                 if(list.id == $rootScope.activeSession.preferences.lists.initialActivelistId){
                     resetDefaultActiveList();
                 }

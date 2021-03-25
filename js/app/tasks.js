@@ -29,12 +29,10 @@ memoruAngular.controller('TaskCtrl',
             let tasksListRef = TasksSvc.getTasksFromUserListWithStatus($rootScope.activeSession.userID, fromListId, status);
             tasksListRef.onSnapshot(function(querySnapshot){
                 let tasks = [];
-                
                 if(!$rootScope.forceRefresh && querySnapshot.metadata.hasPendingWrites){return;}
                 querySnapshot.forEach(function(doc) {
                     tasks.push(doc.data());
                 });
-
                 $scope.$apply(function(){
                     $rootScope.tasksList = tasks;
                     $rootScope.forceRefresh = null;
@@ -86,13 +84,13 @@ memoruAngular.controller('TaskCtrl',
         };
         
         $scope.deleteTask = function(taskObj){
-            $scope.response = {};
+            $scope.response = undefined;
             TasksSvc.deleteUserTask(taskObj, $rootScope.activeSession.userID).then(function(){
                 if(taskObj.status=="open"){
                     TasksSvc.updateOpenTaskCounter($rootScope.activeSession.userID,-1)
                 }
                 $scope.$apply(function(){
-                    $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.deleted };
+                    // $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), message: $rootScope.i18n.tasks.deleted };
                     taskObj.status = "deleted";
                 });
             });
@@ -366,6 +364,9 @@ memoruAngular.factory('TasksSvc',
                     return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('list','==',listId).where('status','==',taskStatus);
                 }
             },
+            getTasksFromUserList: function(userId, listId){
+                return memoruStore.collection(userTasks).doc(userId).collection(ownedTasks).where('list','==',listId).get();
+            },
             moveTasktoList: function(userId, currentListId, newListId){
                 const TASKS_IN_LIST = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks);
                 TASKS_IN_LIST.where('list', '==', currentListId).get().then(snapshots => {
@@ -373,16 +374,6 @@ memoruAngular.factory('TasksSvc',
                         snapshots.forEach(taskItem => {
                             TASKS_IN_LIST.doc(taskItem.id).update({ list: newListId })
                             // console.log(taskItem.data());
-                        })
-                    }
-                })
-            },
-            changeTaskVisibility: function(userId, currentListId, isVisible){
-                const TASKS_IN_LIST = memoruStore.collection(userTasks).doc(userId).collection(ownedTasks);
-                TASKS_IN_LIST.where('list', '==', currentListId).get().then(snapshots => {
-                    if (snapshots.size > 0) {
-                        snapshots.forEach(taskItem => {
-                            TASKS_IN_LIST.doc(taskItem.id).update({ visible: isVisible })
                         })
                     }
                 })
