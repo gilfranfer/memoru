@@ -28,7 +28,7 @@
   </div>
   <div class="row mt-4">
     <div class="col-10 offset-1 col-md-8 offset-md-2 p-0">
-      <button class="btn btn-lg btn-block btn-primary"> {{i18n.btns.return}} </button>
+      <a class="btn btn-lg btn-block btn-primary clickable" ng-href="#!/taskboard">{{i18n.btns.return}} </a>
     </div>
   </div>
 </article>
@@ -156,13 +156,13 @@
 </form>
 
 <!-- Comments -->
-<article class="row mt-4">
+<article class="row mt-4" ng-show="taskEdit.status != 'deleted'">
   <div class="col-12 col-md-8">
     <p class="d-md-none h2 text-center">{{i18n.tasks.commentsTitle}}</p>
     <p class="d-none d-md-block display-4 text-center">{{i18n.tasks.commentsTitle}}</p>
   </div>
 </article>
-<section id="taskComments">
+<section id="taskComments" ng-show="taskEdit.status != 'deleted'">
   <form name="commentsForm" class="row mb-4" novalidate ng-submit="addComment()">
     <div class="col-8">
       <textarea name="" class="form-control form-control-lg" ng-model="newTaskComment" ng-required="true" placeholder="{{i18n.tasks.commentHint}}">
