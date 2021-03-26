@@ -7,7 +7,7 @@
       Keep track of your daily activities, tasks and goals. Create list to organize your task. 
       You can even track the time you spent on each task.
     </p>
-    <p ng-if="!currentUser">
+    <p ng-if="!activeSession.userID">
       <!-- Show Login and Register buttons only if no user is logged -->
       <a role="button" class="btn btn-success btn-lg" href="#!/register">Register Now!</a>
       <a role="button" class="btn btn-primary btn-lg" href="#!/login">or Log in</a>
