@@ -125,12 +125,12 @@
   </div>
   <!-- Buttons -->
   <div class="col-12 col-md-4 mt-2">
-    <div class="col col-md-12 mt-md-2">
-      <button type="submit" class="btn btn-primary btn-lg btn-block clickable" title="{{i18n.btns.saveBtn}}" ng-disabled="editTaskForm.$invalid">
-          <i class="fas fa-save"></i>
-      </button>
-    </div>
     <div class="form-row">
+      <div class="col col-md-12 mt-md-2">
+        <button type="submit" class="btn btn-primary btn-lg btn-block clickable" title="{{i18n.btns.saveBtn}}" ng-disabled="editTaskForm.$invalid">
+            <i class="fas fa-save"></i>
+        </button>
+      </div>
       <div class="col col-md-12 mt-md-2" ng-if="taskEdit.status == 'open'">
         <button type="button" class="btn btn-success btn-lg btn-block clickable text-white" title="{{i18n.btns.close}}" ng-click="closeTask(taskEdit)">
           <i class="fas fa-check"></i>
