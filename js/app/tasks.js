@@ -304,7 +304,11 @@ memoruAngular.controller('TaskCtrl',
                         });
                     }else{
                         /** Normal load after login, registration or moving form another page */
-                        $scope.pepareForTaskboard( $rootScope.activeSession.preferences.tasks.sorting, $rootScope.activeSession.preferences.lists.initialActivelistId);
+                        let list = $rootScope.activeSession.preferences.lists.initialActivelistId;
+                        if($rootScope.activeList.id){
+                            list = $rootScope.activeList.id;
+                        }
+                        $scope.pepareForTaskboard( $rootScope.activeSession.preferences.tasks.sorting, list );
                     }
                 }
             }else{
