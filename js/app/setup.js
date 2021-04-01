@@ -22,7 +22,7 @@ const memoruConstants = {
         sorting: { tasks: [{field:"name", desc:"Task name"},{field:"type", desc:"Task type"},
 								{field:"createdOn", desc:"Creation"},{field:"duedate", desc:"Due Date"}] }
     },
-	lightHourStart: 5, lightHourEnd: 17
+	lightHourStart: 7, lightHourEnd: 18
 };
 
 const defaultLists = [
@@ -57,6 +57,15 @@ const defaultPreferences = {
 }
 
 /** ##### APP SETUP ##### **/
+var firebaseConfig = {
+	apiKey: "AIzaSyC7Yd4e6W8m80OyuGQiajYu8Na9-ivaUSA",
+	authDomain: "memoru-dev.firebaseapp.com",
+	databaseURL: "https://memoru-dev.firebaseio.com",
+	projectId: "memoru-dev",
+	storageBucket: "memoru-dev.appspot.com",
+	messagingSenderId: "657049835975",
+	appId: "1:657049835975:web:1aa1ba450f0ff42d3721e2"
+};
 firebase.initializeApp(firebaseConfig); 
 var memoruStore = firebase.firestore(); 
 var memoruAngular = angular.module('memoruApp',['ngRoute','firebase']);
