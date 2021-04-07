@@ -125,6 +125,12 @@ memoruAngular.controller('ListsCtrl',
                 if(list.id == $rootScope.activeSession.preferences.lists.initialActivelistId){
                     resetDefaultActiveList();
                 }
+
+                //If the visibility of the ActiveList is updated (to false), load the default TaskList
+                if(list.id == $rootScope.activeList.id){
+                    $rootScope.activeList.id = "default";
+                }
+
                 $scope.$apply(function(){
                     $scope.response = {success:true, title: AlertsSvc.getRandomSuccessTitle(), 
                                         message: $rootScope.i18n.lists.updated };
