@@ -171,7 +171,10 @@
         <article id="goal-progress" class="row mt-2" ng-if="task.type=='goal' && activeSession.preferences.goals.showBar">
           <div class="col">
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: {{task.goal.current/task.goal.end*100}}%" aria-valuenow="{{task.goal.current/task.goal.end*100}}" aria-valuemin="0" aria-valuemax="100">
+              <div class="text-dark text-center w-100" ng-if="!task.goal.current"> 0 / {{task.goal.end}}</div>
+              <div class="progress-bar" role="progressbar" 
+              style="width: {{task.goal.current/task.goal.end*100}}%" 
+              aria-valuenow="{{task.goal.current/task.goal.end*100}}" aria-valuemin="0" aria-valuemax="100">
                 <span ng-if="activeSession.preferences.goals.showProgress && activeSession.preferences.goals.progressOn == 'perc'">
                   {{task.goal.current/task.goal.end*100| number:0}}%
                 </span>
